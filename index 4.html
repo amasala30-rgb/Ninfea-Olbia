@@ -1,0 +1,551 @@
+<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#15344a"><link rel="manifest" href="manifest.webmanifest"><title>NINFEA SRL · RICEVIMENTO E STOCK</title><style>
+*{box-sizing:border-box}body{margin:0;background:#eef3f6;color:#152d3d;font:16px system-ui,-apple-system,sans-serif}.wrap{max-width:850px;margin:auto;padding:18px 13px 80px}header{background:#15344a;color:white;padding:25px 20px;border-radius:20px}h1{font-size:31px;letter-spacing:.8px;margin:0}header p{margin:6px 0 0;color:#c9e0e8}.card{background:white;border:1px solid #d6e0e5;border-radius:18px;padding:19px;margin-top:15px;box-shadow:0 2px 8px #102e4208}h2{font-size:21px;margin:0 0 15px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.field{min-width:0}label{display:block;color:#486274;font-size:13px;font-weight:650;margin:0 0 5px}input,select,textarea{width:100%;border:1px solid #bfccd4;border-radius:10px;background:white;color:#152d3d;padding:12px;font:16px system-ui}textarea{min-height:76px}button{border:0;background:#15344a;color:white;border-radius:11px;padding:12px 15px;font-weight:700;font-size:15px;cursor:pointer}button:disabled{opacity:.5}.light{background:#e8eff3;color:#18394c}.danger{background:#fae9e8;color:#9b2825}.small{font-size:13px;padding:8px 11px}.actions{display:flex;flex-wrap:wrap;gap:9px}.actions>*{flex:1}.muted{color:#5e7482;font-size:13px}.stepnav{display:flex;gap:7px;margin:16px 0}.stepnav button{flex:1;padding:12px 4px;background:#dbe5ea;color:#254355;font-size:13px}.stepnav button.active{background:#176b83;color:white}.step{display:none}.step.active{display:block}.line{border-top:1px solid #e1e8ec;margin:15px 0}.photo{display:flex;align-items:center;gap:10px;padding:9px;border:1px solid #d8e1e7;border-radius:11px;margin-top:8px}.photo img{width:68px;height:68px;object-fit:cover;border-radius:7px}.photo span{flex:1;font-size:13px;overflow-wrap:anywhere}.banner{padding:12px;background:#e6f4f2;border-radius:11px;font-size:13px}.summary{background:#eaf4f7;padding:13px;border-radius:11px;font-weight:700}.rec{border-top:1px solid #dce5ea;padding:12px 0}.rec:first-child{border:0}.rec .actions{margin-top:8px}.hidden{display:none!important}.printonly{display:none}.toggle{display:flex;gap:8px;align-items:center}.toggle input{width:auto}.ddtphoto{border:2px dashed #aec2cd;border-radius:12px;padding:12px;margin:12px 0}.status{color:#496c7b;font-size:13px;margin-top:10px;min-height:18px}#printArea{display:none}@media(max-width:550px){.grid{grid-template-columns:1fr}h1{font-size:27px}.card{padding:15px}.wrap{padding:10px 9px 60px}}@page{size:A4;margin:12mm}@media print{body{background:white;font:10.5pt Arial}.wrap,header,.stepnav,.card,.noprint{display:none!important}#printArea{display:block!important}.sheet{page-break-after:always}.sheet:last-child{page-break-after:auto}.sheet h1{font:700 19pt Arial;margin:0 0 3mm}.sheet h2{font:700 12pt Arial;margin:5mm 0 2mm;border-bottom:1px solid #bbb}.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:2mm 6mm}.pfield{border-bottom:1px solid #e2e2e2;padding:1.5mm 0;overflow-wrap:anywhere}.pfield b{display:block;font-size:8pt;color:#444}.pimage{display:inline-block;width:47%;margin:1%}.pimage img{width:100%;max-height:100mm;object-fit:contain}.photoPage{break-before:page}.printnote{font-size:8pt;color:#555}}
+
+#operatorGate{position:fixed;inset:0;background:#102e42d9;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px}#operatorGate.hidden{display:none!important}.gateCard{width:min(440px,100%);background:#fff;border-radius:18px;padding:24px;box-shadow:0 12px 50px #0004}.gateCard h2{margin-bottom:8px}.gateCard button{width:100%;margin-top:14px}.topPhoto{background:#f0f8fa;border:2px solid #9cc8d4}.topPhoto .actions{margin:10px 0}.topPhoto input[type=file]{background:white}.topPhoto .photo{background:white}.topPhoto button{font-size:14px}.topPhoto .status{font-weight:600}
+
+.stocktabs{display:flex;gap:7px;flex-wrap:wrap;margin:15px 0}.stocktabs button{flex:1;min-width:100px;background:#dbe5ea;color:#15344a}.stocktabs button.on{background:#176b83;color:#fff}.stockview{display:none}.stockview.on{display:block}.stat{background:#edf6f8;padding:14px;border-radius:12px}.stat strong{display:block;font-size:24px;margin-top:5px}.warn{color:#a43b1b;font-weight:700}.ok{color:#13734d}.movement{padding:12px 0;border-bottom:1px solid #ddd}.movement:last-child{border:0}.pill{display:inline-block;background:#e6f0f5;padding:3px 7px;border-radius:7px;font-size:12px}.help{font-size:13px;color:#476273;margin-top:6px}
+.sealCapture{margin-top:9px;padding:11px;border:1px dashed #8db9c4;border-radius:12px;background:#f0f8fa}.sealCapture label{font-size:13px}.sealCapture button{margin-top:8px}.quickChoices{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}.quickChoices button{flex:1;background:#e6eff3;color:#15344a;padding:10px 5px;font-size:13px}.quickChoices button.chosen{background:#176b83;color:#fff}.mainAction{background:#137e69;font-size:17px;padding:16px}.photoPage,.pimage{break-inside:avoid}
+.dashboard{margin-top:15px;background:#fff;border:1px solid #d6e0e5;border-radius:20px;padding:17px}
+.dashboard h2{margin:0 0 4px;font-size:24px}
+.dashboard p{margin:0 0 15px;color:#5e7482;font-size:13px}
+.dashgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.dashbtn{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:8px;text-align:left;min-height:130px;border-radius:17px;background:#22313d;color:#fff;padding:16px}
+.dashbtn .emoji{font-size:27px}.dashbtn strong{font-size:18px}.dashbtn small{color:#bfcbd2;font-size:12px}
+.dashbtn:active{background:#176b83}
+.photo button.danger{flex:none;width:auto;min-width:88px}
+.sealPreview .photo{background:white}
+@media(max-width:380px){.dashbtn{min-height:115px;padding:12px}.dashbtn strong{font-size:16px}}
+
+:root{--ink:#142b3c;--teal:#0f7384;--mint:#e6f5f3}
+body{background:linear-gradient(180deg,#e5eff2 0,#f4f7f8 260px);color:var(--ink)}
+.wrap{max-width:760px;padding:12px 12px 90px}
+header{position:relative;overflow:hidden;background:linear-gradient(130deg,#12394a,#0d6775);border-radius:23px;padding:25px 23px;box-shadow:0 12px 26px #12394a22}
+header:after{content:"◌";position:absolute;right:14px;top:-39px;font-size:155px;color:#ffffff12;pointer-events:none}
+header h1{font-size:27px;letter-spacing:1px}
+header p{font-size:13px;line-height:1.5}
+.card,.dashboard{border:1px solid #dce6e9;border-radius:22px;box-shadow:0 5px 20px #12394a0a;padding:19px}
+.dashboard{background:transparent;border:0;box-shadow:none;padding:16px 0 3px}
+.dashboard h2{font-size:23px;margin:0 0 4px}
+.dashboard p{margin-bottom:15px}
+.dashgrid{gap:12px}
+.dashbtn{background:white;color:#18394a;border:1px solid #dce8ea;box-shadow:0 3px 12px #12394a0d;border-radius:19px;min-height:136px;padding:18px;gap:7px;transition:transform .12s,background .12s}
+.dashbtn:active{transform:scale(.97);background:#e8f4f5}
+.dashbtn .emoji{font-size:28px;background:#e8f4f5;border-radius:13px;padding:8px;line-height:1.1}
+.dashbtn strong{font-size:17px}
+.dashbtn small{color:#607986}
+input,select,textarea{border:1px solid #ccdce1;border-radius:13px;background:#fbfdfd;min-height:48px}
+input:focus,select:focus,textarea:focus{outline:2px solid #73bdc5;outline-offset:1px;background:white}
+button{min-height:44px;border-radius:13px}
+button.mainAction,#save{background:linear-gradient(120deg,#087484,#0b536b);box-shadow:0 5px 12px #0b536b22}
+.stepnav{background:#e3edef;border-radius:14px;padding:4px;gap:3px}
+.stepnav button{border-radius:10px}
+.card h2{letter-spacing:-.35px}
+.dwellLive{margin-top:9px;padding:15px 12px;background:#e3f5ef;color:#0d5949;border:2px solid #9cd9c5;border-radius:13px;text-align:center;font-weight:800;font-size:21px}
+.dwellPrint{border:2.5px solid #111;padding:12px;margin-top:16px;text-align:center;break-inside:avoid;page-break-inside:avoid}
+.dwellPrint div{font-size:12pt;font-weight:bold;letter-spacing:.4px}
+.dwellPrint strong{display:block;font-size:25pt;margin:4px 0}
+.dwellPrint small{display:block;font-size:9pt}
+.photo{background:#f7fbfb}
+.photo button.danger{background:#fbe7e7;border:1px solid #e9bebe;color:#a22d2d}
+@media(max-width:550px){.wrap{padding:9px 10px 75px}.card{padding:16px}.dashbtn{min-height:128px;padding:13px}.dashbtn strong{font-size:16px}.dashbtn small{font-size:11px}.dashboard{padding-top:15px}}
+@media print{.dwellPrint{display:block!important}header,.dashboard{display:none!important}}
+ 
+.photoChoice{flex:1;display:flex;align-items:center;justify-content:center;background:#e8f4f5;border:1px solid #bcdadd;color:#174a58;border-radius:13px;padding:12px 8px;min-height:49px;font-weight:700;font-size:13px;cursor:pointer}
+.photoChoice input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.visualControl{grid-column:1/-1;background:#f2f9f9;border:1px solid #d2e9e9;border-radius:16px;padding:14px}
+.weightCompare{padding:15px;border-radius:13px;background:#edf2f4;font-weight:800;font-size:17px}
+.weightCompare.mismatch{background:#ffe7e7;color:#a41220;border:2px solid #e65b65}
+.weightCompare.match{background:#e6f5ed;color:#136441}
+.weightPrint{border:1.5px solid #555;padding:10px;text-align:center;margin:12px 0;break-inside:avoid}
+.weightPrint strong{display:block;font-size:16pt;margin-top:5px}
+.weightPrint.mismatch{border:3px solid #c00000;color:#c00000}
+@media print{.weightPrint.mismatch{color:#b00000!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+
+.subnav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:15px 0}
+.subnav button{font-size:12px;line-height:1.3;background:#edf3f5;color:#234b59;border:1px solid #d5e5e8;padding:9px 5px;min-height:48px}
+.subnav button.active{background:#0e6576;color:#fff;border-color:#0e6576}
+.substep{display:none}.substep.subactive{display:block}.substep h3{font-size:18px;margin:15px 0}
+.subactions{justify-content:space-between;margin:18px 0 8px}.subactions button{flex:1}
+.weightCompare>div{display:flex;justify-content:space-between;gap:10px;padding:4px 0}.weightCompare hr{border:0;border-top:1px solid #c8d5d9;margin:10px 0}
+
+/* V10: schermate separate; la home non rimane fissa */
+body.app-home .wrap>header,body.app-home #homeBar{display:none!important}
+body.app-home .wrap> :not(#homeDashboard):not(header):not(#homeBar){display:none!important}
+body.app-work #homeDashboard{display:none!important}
+body.app-work #homeBar{display:block!important}
+body.app-work .wrap> :not(header):not(#homeBar):not(#homeDashboard):not(.activeWork){display:none!important}
+body.app-work .activeWork{display:block!important}
+body.app-work .step:not(.active){display:none!important}
+#homeBar{margin:8px 0 14px}#goHome{font-weight:700;background:#e8f3f4;border:1px solid #b8d9dd;color:#125569;padding:12px 18px}
+body.app-home .dashboard{padding-top:22px}
+
+#homeBar{display:flex;gap:8px;flex-wrap:wrap}
+#homeBar button{flex:1;min-width:100px;font-weight:700}
+#pdfAnywhere{background:#0f7384;color:white}
+@media print{
+ @page{size:A4;margin:8mm}
+ body{font:10pt Arial!important}
+ #printArea{display:block!important}
+ .reportA4{height:280mm;max-height:280mm;page-break-after:always;break-after:page;overflow:hidden;color:#15344a;font:10pt Arial}
+ .reportHead{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #17475f;padding-bottom:3mm;margin-bottom:3mm}
+ .reportHead h1{font-size:19pt!important;margin:0!important;color:#123d57}
+ .reportHead strong{font-size:9pt}.reportDate{text-align:right}.reportDate b{font-size:13pt;display:block}
+ .reportCols{display:grid;grid-template-columns:1fr 1fr;gap:3mm;margin-bottom:3mm}
+ .reportBlock{border:1px solid #cddde3;border-radius:2mm;overflow:hidden;break-inside:avoid;margin-bottom:3mm}
+ .reportCols .reportBlock{margin-bottom:0}
+ .reportBlock h2{background:#e2edf3!important;color:#123e57!important;font:bold 10pt Arial!important;padding:2mm 2.5mm!important;margin:0!important;border:0!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ .reportInner{padding:2mm 2.5mm}
+ .reportRow{display:flex;justify-content:space-between;gap:3mm;align-items:baseline;border-bottom:1px solid #edf1f3;min-height:6mm;font-size:9pt}
+ .reportRow span{color:#405868}.reportRow b{text-align:right;font-size:10pt}
+ .reportStatus{display:inline-block;border-radius:1mm;padding:1mm 2mm;font-weight:bold;font-size:10pt}
+ .reportStatus.good{background:#ddf3e6!important;color:#08723e!important}
+ .reportStatus.bad{background:#ffe1e3!important;color:#ba1728!important}
+ .reportStatus.neutral{background:#e8eef2!important;color:#334c5d!important}
+ .reportTimes{display:grid;grid-template-columns:repeat(4,1fr);gap:1mm;text-align:center}
+ .reportTimes div{padding:1mm;border-right:1px solid #d8e4e9}
+ .reportTimes span,.reportMetrics span{display:block;font-size:8pt}
+ .reportTimes b{font-size:15pt}
+ .reportDwell{background:#eaf2f7!important;padding:2mm 3mm;margin-top:2mm;display:flex;align-items:center;gap:5mm}
+ .reportDwell span{font-weight:bold;font-size:10pt}.reportDwell strong{font-size:17pt}
+ .reportDwell small{font-size:7pt;color:#4a6678}
+ .reportMetrics{display:grid;grid-template-columns:repeat(3,1fr);text-align:center;gap:1mm}
+ .reportMetrics b{display:block;font-size:13pt;margin-top:1mm}
+ .reportWeight{text-align:center;margin-top:2mm}
+ .reportOrder{font-size:9pt;margin-top:1mm;color:#a14b00}
+ .reportNotes{min-height:9mm;max-height:18mm;overflow:hidden;white-space:pre-wrap}
+ .reportFooter{display:flex;justify-content:space-between;border-top:1px solid #b8cbd5;padding-top:2mm;font-size:9pt}
+ .photoAppendix .photoFull{break-before:page;page-break-before:always;page-break-after:always;height:270mm;text-align:center}
+ .photoFull h2{font:bold 13pt Arial;margin:0 0 5mm}
+ .photoFull img{display:block;max-width:100%;max-height:240mm;width:auto;height:auto;object-fit:contain;margin:auto}
+ .photoFull p{font-size:9pt}
+ .sectionSnapshot{font:10pt Arial}.sectionSnapshot .grid{display:grid;grid-template-columns:1fr 1fr;gap:3mm}
+ .sectionSnapshot .field,.sectionSnapshot .stat{padding:2mm;border:1px solid #ddd}
+ .sectionSnapshot label{font-weight:bold}
+}
+
+/* NINFEA V15 · mobile-first clean interface */
+:root{--brand:#1267d8;--navy:#10385d;--text:#19324c;--muted:#627a91;--line:#dce7f1;--soft:#f4f8fc}
+body{background:#f2f6fb;color:var(--text)}
+.wrap{max-width:850px;padding:12px 12px 90px}
+header{border-radius:18px;background:linear-gradient(125deg,#092d50,#145d9c);padding:19px 22px;box-shadow:0 7px 22px #133f7022}
+header:after{content:"";right:-55px;top:-55px;width:190px;height:190px;border:28px solid #ffffff10;border-radius:100%}
+header h1{font-size:25px;letter-spacing:.4px}
+header p{color:#cbdff1}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:19px;box-shadow:0 3px 14px #10385d0b;margin-top:13px}
+.card h2{color:#133e66;font-size:21px;margin-bottom:17px;letter-spacing:-.35px}
+.card h3{color:#1b527e}
+.dashboard{background:transparent;border:0;box-shadow:none;padding:8px 0 0}
+.dashboard h2{color:#153e64;font-size:23px}
+.dashgrid{gap:12px}
+.dashbtn{background:white!important;color:#183f62!important;border:1px solid #d9e6f3;border-radius:18px;min-height:137px;box-shadow:0 4px 14px #163f6911;gap:7px;transition:transform .12s}
+.dashbtn:active{transform:scale(.97)}
+.dashbtn:nth-child(1){border-top:5px solid #216fe5}
+.dashbtn:nth-child(2){border-top:5px solid #10a7a1}
+.dashbtn:nth-child(3){border-top:5px solid #e9902a}
+.dashbtn:nth-child(4){border-top:5px solid #8560c8}
+.dashbtn:nth-child(5){border-top:5px solid #d85161}
+.dashbtn:nth-child(6){border-top:5px solid #637b96}
+.dashbtn .emoji{background:#ecf4ff;border-radius:12px;padding:8px;font-size:25px}
+.dashbtn strong{font-size:17px}.dashbtn small{color:#60778c!important}
+input,select,textarea{background:#fbfdff;border:1px solid #ccdbe9;border-radius:12px;min-height:48px;font-size:16px}
+input:focus,select:focus,textarea:focus{border-color:#2681e7;outline:2px solid #2681e733;outline-offset:1px;background:white}
+label{color:#456581;font-size:13px}
+button{border-radius:12px;background:#1267d8;min-height:45px}
+button.light{background:#edf3f9;color:#1a4a72}
+button.mainAction{background:#0b846a}
+.stepnav{background:#e8f0f9;border-radius:14px;padding:5px;gap:4px;position:sticky;top:0;z-index:6}
+.stepnav button{background:transparent;color:#57718a;border-radius:10px;padding:10px 5px;font-size:13px;min-height:44px}
+.stepnav button.active{background:#1267d8;color:white;box-shadow:0 2px 7px #1267d833}
+.subnav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;background:#f2f6fb;border-radius:14px;padding:8px}
+.subnav button{background:#e3edf7;color:#275679;border-radius:10px;font-size:12px;min-height:43px}
+.subnav button.active{background:#1267d8;color:white}
+#homeBar{position:sticky;top:0;z-index:9;background:#f2f6fbeb;backdrop-filter:blur(12px);padding:8px 0;margin:5px 0}
+#homeBar button{font-size:13px;padding:10px 6px;min-width:0!important}
+#goHome{background:#e6eef7;color:#184f7e}
+#printAnywhere{background:#e6eef7;color:#184f7e}
+#pdfAnywhere{background:#1267d8;color:white}
+.field.visualControl,.ddtphoto,.sealCapture{background:#f6faff;border:1px solid #d8e8f7;border-radius:15px;padding:14px}
+.dwellLive{background:#eaf4ff;color:#124d87;border:1px solid #bad9f9;border-radius:13px}
+.weightCompare.mismatch{background:#fff0f0;color:#b21b2c;border:2px solid #e4a1a7}
+.weightCompare.match{background:#e8f7ee;color:#0b7542}
+.photo{background:#f8fbff;border:1px solid #d9e7f4}
+.photoChoice{background:#eaf3ff;color:#16568f;border:1px solid #c8e0f9}
+.status{font-weight:600}
+@media(max-width:550px){
+ .wrap{padding:9px 10px 70px}.card{padding:15px}.stepnav button{font-size:12px}
+ .dashbtn{min-height:124px;padding:14px}.dashbtn strong{font-size:16px}
+ .subnav button{font-size:12px}
+}
+
+@media print{
+@page{size:A4;margin:8mm}
+.reportA4{font-family:Arial,sans-serif!important;color:#173750!important;height:auto!important;min-height:0!important;max-height:274mm!important;overflow:hidden;break-after:page;page-break-after:always}
+.reportHead{background:#143c60!important;color:#fff!important;padding:4mm!important;border:0!important;margin-bottom:2mm!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.reportHead h1{color:white!important;font-size:18pt!important}
+.reportHead strong,.reportDate{color:white!important}
+.reportBlock{border:1px solid #d0dce6!important}
+.reportBlock h2{background:#173f5e!important;color:white!important;font-size:9pt!important;padding:2mm!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.reportRow{min-height:5mm!important;font-size:8.5pt!important}
+.reportRow b{font-size:9.5pt!important}
+.reportTimes b{font-size:13pt!important}
+.reportDwell{padding:2mm!important}
+.reportDwell strong{font-size:17pt!important}
+.reportMetrics b{font-size:12pt!important}
+.reportStatus.good{background:#e4f5eb!important;color:#087544!important}
+.reportStatus.bad{background:#ffe2e5!important;color:#b31d30!important}
+.reportNotes{min-height:5mm!important;max-height:11mm!important}
+.reportCols{gap:2mm!important;margin-bottom:2mm!important}
+.reportBlock{margin-bottom:2mm!important}
+.reportFooter{padding-top:1mm!important}
+.photoAppendix .photoFull{height:270mm!important}
+}
+
+/* V15 - legal name, uppercase data entry, button-only navigation */
+input:not([type]),input[type="text"],input[type="search"],textarea,select{text-transform:uppercase}
+.stepnav button,.subnav button{cursor:pointer}
+.subactions button{min-width:130px;font-weight:700}
+</style></head><body><div id="operatorGate" class="hidden"><div class="gateCard"><h2>Benvenuto in NINFEA SRL</h2><p class="muted">Inserisci nome e cognome una sola volta. Saranno riportati sulle schede e sui PDF.</p><label for="gateName">Nome e cognome operatore</label><input id="gateName" autocomplete="name" placeholder="Es. Mario Rossi"><button id="gateSave" type="button">Conferma operatore</button></div></div><main class="wrap"><header><h1>NINFEA SRL <small style='font-size:12px'>V15</small></h1><p>Ricevimento merci · Giacenze · Ordini e spedizioni</p></header><div class="homebar noprint" id="homeBar"><button type="button" id="goHome" class="light">⌂ Home · Menu principale</button><button type="button" id="printAnywhere" class="light">🖨️ Stampa</button><button type="button" id="pdfAnywhere" class="light">📄 Crea PDF</button></div><section class="dashboard noprint" id="homeDashboard"><h2>Operazioni rapide</h2><p>Scegli cosa vuoi fare. Tutte le schede restano nel telefono.</p><div class="dashgrid">
+<button type="button" class="dashbtn" data-go="receive"><span class="emoji">🚚</span><strong>Ricevi camion</strong><small>Nuovo carico</small></button>
+<button type="button" class="dashbtn" data-go="overview"><span class="emoji">📦</span><strong>Giacenze</strong><small>Disponibilità</small></button>
+<button type="button" class="dashbtn" data-go="orders"><span class="emoji">📋</span><strong>Ordini</strong><small>Nuovo ordine</small></button>
+<button type="button" class="dashbtn" data-go="movements"><span class="emoji">➤</span><strong>Spedizioni</strong><small>Conferma uscita</small></button>
+<button type="button" class="dashbtn" data-go="waste"><span class="emoji">🗑️</span><strong>Scarti</strong><small>Registra perdita</small></button>
+<button type="button" class="dashbtn" data-go="archive"><span class="emoji">📂</span><strong>Archivio</strong><small>Cerca e condividi</small></button>
+</div></section><section class="card topPhoto noprint" id="quickPhoto"><h2>📷 1. Fotografa o allega il DDT</h2><p class="muted">Inizia da qui: scatta una foto al documento di trasporto o scegli un'immagine dalla galleria. Puoi aggiungere altre foto anche dopo.</p><input type="file" accept="image/*" capture="environment" id="quickDDTCamera" aria-label="Scatta foto DDT"><div class="actions"><button type="button" class="light" id="quickGallery">Scegli dalla galleria</button><button type="button" id="quickOCR">Leggi e compila DDT dalla foto</button></div><input type="file" accept="image/*" id="quickDDTGallery" multiple class="hidden"><div id="quickPreview"></div><p class="status" id="quickStatus">Puoi proseguire anche senza foto. Verifica sempre i dati riconosciuti.</p></section><div class="card" id="identity"><div class="grid"><div class="field"><label>Operatore principale</label><input id="operator" placeholder="Nome e cognome"></div><div class="field"><label>Secondo operatore (facoltativo)</label><input id="operator2" placeholder="Nome e cognome"></div></div><p class="muted">Il nome principale resta memorizzato su questo dispositivo.</p><button type="button" class="light small" id="changeOperator">Cambia operatore</button></div><div class="stepnav noprint"><button class="active" data-step="0">1 · Trasportatore</button><button data-step="1">2 · DDT</button><button data-step="2">3 · Controlli e pesi</button></div><section class="card step active" id="step0"><h2>1. Trasportatore</h2><div class="grid"><div class="field"><label>Data ricevimento</label><input type="date" id="date"></div><div class="field"><label>Nome vettore / trasportatore</label><input id="carrier" placeholder="Azienda trasporto"></div><div class="field"><label>Targa motrice</label><input id="plate" placeholder="Targa"></div><div class="field"><label>Targa rimorchio (facoltativa)</label><input id="trailerPlate"></div><div class="field"><label>Numero sigillo (sempre modificabile)</label><input id="seal" placeholder="Numero sigillo"><div class="sealCapture"><div id="sealPreview" class="sealPreview"></div><label for="sealCamera">📷 Fotografa sigillo e conserva la foto</label><input id="sealCamera" type="file" accept="image/*" capture="environment"><button type="button" class="light small" id="sealOCR">Leggi numero dalla foto</button><p class="muted" id="sealOCRStatus">La foto viene allegata alla scheda e al PDF. Controlla il numero riconosciuto.</p></div></div><div class="field"><label>Temperatura rimorchio (°C)</label><input type="number" step="0.1" inputmode="decimal" id="trailerTemp"></div><div class="field"><label>Integrità sigillo</label><select id="sealStatus"><option value="">Seleziona</option><option>Integro</option><option>Non integro</option><option>Assente</option></select></div><div class="field"><label>Provenienza</label><input id="origin"></div></div><div class="actions" style="margin-top:18px"><button data-next="1">Avanti: DDT →</button></div></section><section class="card step" id="step1"><h2>2. Dati DDT</h2><div class="grid"><div class="field"><label>Numero DDT</label><input id="ddtNumber"></div><div class="field"><label>Data DDT</label><input type="date" id="ddtDate"></div><div class="field"><label>Mittente / fornitore</label><input id="supplier"></div><div class="field"><label>Destinatario</label><input id="recipient" value="NINFEA SRL"></div><div class="field"><label>Descrizione merce</label><input id="goods" placeholder="Es. molluschi bivalvi vivi"></div><div class="field"><label>Peso dichiarato sul DDT (kg)</label><input type="number" step="0.001" inputmode="decimal" id="quantity"></div><div class="field"><label>Peso dichiarato sull’ordine (kg)</label><input type="number" min="0" step="0.001" inputmode="decimal" id="orderWeight" placeholder="Es. 2500"></div><div class="field"><label>Unità di misura</label><select id="unit"><option>kg</option><option>colli</option><option>sacchi</option><option>pezzi</option></select></div><div class="field"><label>Numero colli / sacchi</label><input type="number" min="0" step="1" id="packages"></div><div class="field"><label>Zona FAO di allevamento</label><input id="faoZone" placeholder="Es. 27"></div><div class="field"><label>Sottozona FAO</label><input id="faoSubzone" placeholder="Es. IX A"></div><div class="field"><label>Metodo di produzione</label><select id="productionMethod"><option value="">Seleziona</option><option>Allevato</option><option>Pescato</option><option>Altro</option></select></div><div class="field"><label>Codice NC (facoltativo)</label><input id="ncCode" placeholder="Es. 0307"></div><div class="field"><label>Numero lotto</label><input id="lot"></div><div class="field"><label>Riferimento / matricola (facoltativo)</label><input id="reference"></div></div><div class="ddtphoto"><b>Fotografa il DDT</b><p class="muted">Puoi allegare il documento e tentare la lettura automatica dei campi principali. Controlla sempre i risultati.</p><input type="file" accept="image/*" capture="environment" id="ddtFile"><div class="actions" style="margin-top:10px"><button type="button" id="readDDT" class="light">Leggi dati dalla foto (OCR)</button></div><div id="ddtPreview"></div><p class="muted">Il riconoscimento richiede internet e potrebbe non funzionare su tutti i documenti. La foto rimane sul dispositivo; per OCR viene elaborata nel browser tramite una libreria caricata online.</p></div><div class="actions"><button class="light" data-next="0">← Indietro</button><button data-next="2">Avanti: controlli →</button></div></section><section class="card step" id="step2"><h2>3. Ricevimento e controlli</h2><p class="muted">Procedi in sequenza oppure scegli liberamente una fase.</p><div class="subnav noprint"><button type="button" data-sub="0">1 · Scarico</button><button type="button" data-sub="1">2 · Ingresso casse</button><button type="button" data-sub="2">3 · Pesatura</button><button type="button" data-sub="3">4 · Controlli finali</button></div><div class="substep" data-subpanel="0"><h3>Scarico e controllo visivo</h3><div class="grid"><div class="field"><label>Orario arrivo rimorchio nel piazzale</label><div class="actions"><input type="time" id="arrival"><button class="light small" type="button" data-now="arrival">Adesso</button></div></div><div class="field"><label>Inizio scarico (apertura rimorchio)</label><div class="actions"><input type="time" id="departure"><button class="light small" type="button" data-now="departure">Adesso</button></div></div><div class="field visualControl"><label>Controllo visivo allo scarico</label><select id="visual"><option value="">Seleziona</option><option>Conforme</option><option>Da verificare</option><option>Non conforme</option></select><div class="actions" style="margin-top:9px"><label class="photoChoice">📷 Scatta foto<input type="file" accept="image/*" capture="environment" id="visualCamera"></label><label class="photoChoice">🖼️ Carica foto<input type="file" accept="image/*" id="visualGallery" multiple></label></div><div id="visualPreview"></div><p class="muted">Le foto del controllo saranno allegate alla scheda e al PDF. Puoi eliminarle e rifarle.</p></div></div><div class="actions subactions"><button type="button" class="mainAction" data-subnext="1">Completa e continua →</button></div></div><div class="substep" data-subpanel="1"><h3>Fine scarico e ingresso casse</h3><div class="grid"><div class="field"><label>Fine scarico rimorchio</label><div class="actions"><input type="time" id="entrance"><button class="light small" type="button" data-now="entrance">Adesso</button></div></div><div class="field"><label>Ingresso casse nello stabilimento</label><div class="actions"><input type="time" id="cratesEntry"><button class="light small" type="button" data-now="cratesEntry">Adesso</button></div></div><div class="field"><label>Tempo di sosta delle casse (calcolato)</label><input id="dwell" readonly placeholder="--"><div class="dwellLive">⏱️ <span id="dwellHighlight">In attesa degli orari</span></div></div></div><div class="actions subactions"><button type="button" class="light" data-subnext="0">← Indietro</button><button type="button" class="mainAction" data-subnext="2">Completa e continua →</button></div></div><div class="substep" data-subpanel="2"><h3>Pesatura reale nello stabilimento</h3><div class="grid"><div class="field"><label>Peso effettivamente rilevato nello stabilimento (kg)</label><input type="number" min="0" step="0.001" inputmode="decimal" id="realWeight" placeholder="Es. 2495"></div><div class="field"><label>Destinazione delle cozze</label><select id="stockDestination"><option value="commerciale">Pronte per la commercializzazione</option><option value="mare">Destinate all’allevamento in mare</option></select><p class="help">La merce in mare non è disponibile per gli ordini. Il trasferimento a commerciale richiede la registrazione della raccolta e la verifica dei requisiti sanitari.</p></div><div class="field"><label>Confronto dei tre pesi</label><div id="weightCompare" class="weightCompare" role="status" aria-live="polite">Inserisci il peso DDT e il peso reale</div></div></div><div class="actions subactions"><button type="button" class="light" data-subnext="1">← Indietro</button><button type="button" class="mainAction" data-subnext="3">Completa e continua →</button></div></div><div class="substep" data-subpanel="3"><h3>Controlli conclusivi e documentazione</h3><div class="grid"><div class="field"><label>Temperatura esterna (°C)</label><input type="number" step="0.1" inputmode="decimal" id="outsideTemp"></div><div class="field"><label>Temperatura acqua casse (°C)</label><input type="number" step="0.1" inputmode="decimal" id="waterTemp"></div><div class="field"><label>Temperatura stabilimento (°C)</label><input type="number" step="0.1" inputmode="decimal" id="plantTemp"></div><div class="field"><label>Condizioni imballaggi</label><select id="packaging"><option value="">Seleziona</option><option>Integri</option><option>Danneggiati</option><option>Da verificare</option></select></div></div><div class="field" style="margin-top:13px"><label>Note / anomalie</label><textarea id="notes" placeholder="Osservazioni e controlli aggiuntivi"></textarea></div><div class="line"></div><h2>Fotografie aggiuntive</h2><input type="file" accept="image/*" capture="environment" id="photosInput" multiple><p class="muted">Puoi scattare o scegliere più fotografie, fino a 12 per registrazione (DDT compreso).</p><div id="photoList"></div><div class="line"></div><label class="toggle"><input type="checkbox" id="includePhotos" checked> Includi automaticamente le fotografie nella stampa / PDF</label><div class="actions" style="margin-top:16px"><button type="button" class="light" data-subnext="2">← Indietro</button><button id="save" class="mainAction">💾 Salva e prepara PDF</button></div></div></section><div class="card"><h2>Stampa e condivisione</h2><div class="actions"><button id="printOne" class="light">Stampa scheda</button><button id="printTwo" class="light">Stampa due per pagina</button><button id="share">Condividi PDF</button></div><p class="muted">Per condividere un PDF su WhatsApp si apre il menu di condivisione del dispositivo. L'invio richiede conferma.</p><p id="status" class="status"></p></div><div class="card"><div class="actions" style="align-items:center"><h2 style="flex:3;margin:0">Storico ricevimento</h2><button id="new" class="light small">Nuovo ricevimento</button><button id="export" class="light small">Esporta JSON</button></div><div id="history" class="muted" style="margin-top:12px"></div></div>
+<section class="card" id="stockModule"><h2>📦 Gestione giacenze e spedizioni</h2><p class="muted">La giacenza fisica usa il peso reale rilevato in stabilimento. Gli ordini riservano merce senza scaricarla; soltanto spedizioni e scarti confermati riducono la giacenza.</p>
+<div class="card" style="background:#f5fafc;border:1px solid #c9dde5;margin:12px 0"><h3>Inventario iniziale e rettifiche</h3><p class="help">Registra le quantità già presenti all’avvio, per lotto. Le correzioni successive restano nello storico e richiedono una motivazione.</p><div class="grid"><div class="field"><label>Operazione</label><select id="adjMode"><option value="iniziale">Carico iniziale</option><option value="rettifica">Rettifica quantità di un lotto</option></select></div><div class="field"><label>Destinazione del carico iniziale</label><select id="adjDest"><option value="commerciale">Pronte per la commercializzazione</option><option value="mare">In allevamento in mare</option></select></div><div class="field"><label>Lotto / identificativo del carico iniziale</label><input id="adjName" placeholder="Es. GIACENZA INIZIALE LOTTO A"></div><div class="field"><label>Lotto da rettificare</label><select id="adjLot"></select></div><div class="field"><label>Quantità in kg</label><input id="adjQty" type="number" step="0.001" min="0.001" inputmode="decimal"></div><div class="field"><label>Tipo rettifica</label><select id="adjSign"><option value="1">Aumenta la giacenza</option><option value="-1">Diminuisci la giacenza</option></select></div><div class="field"><label>Motivo / riferimento inventario</label><input id="adjReason" placeholder="Obbligatorio"></div></div><div class="actions"><button type="button" id="adjSave">Registra e aggiorna giacenza</button></div></div><div class="card" style="background:#f5fafc;border:1px solid #c9dde5;margin:12px 0"><h3>Raccolta da allevamento in mare</h3><p class="help">Registra il prelievo dal lotto in mare e il peso effettivo raccolto. Il prodotto entra nel commerciale solo dopo le verifiche richieste.</p><div class="grid"><div class="field"><label>Lotto in mare</label><select id="harvestLot"></select></div><div class="field"><label>Quantità scaricata dal lotto in mare (kg)</label><input id="harvestOut" type="number" min="0.001" step="0.001"></div><div class="field"><label>Peso reale raccolto (kg)</label><input id="harvestIn" type="number" min="0.001" step="0.001"></div><div class="field"><label>Nuovo lotto commerciale</label><input id="harvestName" placeholder="Lotto raccolta"></div><div class="field"><label>Riferimento controlli / documento</label><input id="harvestDoc" placeholder="Obbligatorio"></div></div><div class="actions"><button type="button" id="harvestSave">Conferma raccolta e carico commerciale</button></div></div><div class="stocktabs noprint"><button type="button" data-stocktab="overview" class="on">Giacenze</button><button type="button" data-stocktab="orders">Ordini</button><button type="button" data-stocktab="movements">Movimenti</button><button type="button" data-stocktab="ledger">Storico</button></div>
+<div class="stockview on" id="sv-overview"><div class="grid"><div class="stat"><span>Giacenza in mare (registrata)</span><strong id="stockSea">0 kg</strong></div><div class="stat"><span>Giacenza commerciale</span><strong id="stockTotal">0 kg</strong></div><div class="stat"><span>Uscite confermate</span><strong id="stockOut">0 kg</strong></div><div class="stat"><span>Perdite registrate</span><strong id="stockLoss">0 kg</strong></div><div class="stat"><span>Di cui ordinati / riservati</span><strong id="stockPending">0 kg</strong></div><div class="stat"><span>Disponibile per nuovi ordini</span><strong id="stockFree">0 kg</strong></div></div><h2 style="margin-top:20px">Giacenza per carico / lotto</h2><div id="stockLots" class="muted"></div><h2>Giacenza in allevamento in mare</h2><div id="stockSeaLots" class="muted"></div><p class="help">La giacenza è teorica, calcolata dai movimenti registrati. Per rilevare differenze fisiche serve una verifica inventariale.</p></div>
+<div class="stockview" id="sv-orders"><h2>Nuovo ordine / fattura</h2><div class="grid"><div class="field"><label>Numero fattura / ordine</label><input id="ordNumber" placeholder="Es. 1135"></div><div class="field"><label>Data documento</label><input id="ordDate" type="date"></div><div class="field"><label>Cliente / destinatario</label><input id="ordClient" placeholder="Es. Coromeu SRL"></div><div class="field"><label>Quantità ordinata (kg)</label><input id="ordQty" type="number" min="0" step="0.001" inputmode="decimal"></div><div class="field"><label>Colli / sacchi ordinati</label><input id="ordBags" type="number" min="0" step="1"></div><div class="field"><label>Carico / lotto da utilizzare</label><select id="ordLot"></select></div></div><div class="field" style="margin-top:10px"><label>Note</label><textarea id="ordNotes" placeholder="Riferimenti e indicazioni"></textarea></div><div class="actions"><button type="button" id="ordSave">Registra ordine e riserva</button><button type="button" id="ordNew" class="light">Nuovo ordine</button><span id="ordEditing" class="muted"></span></div><h2 style="margin-top:20px">Trasferisci quantità riservata tra ordini</h2><p class="help">La quantità trasferita riduce la prenotazione dell'ordine di origine e aumenta quella del destinatario. Nessuna uscita fisica. Le quantità già spedite non si possono trasferire.</p><div class="grid"><div class="field"><label>Ordine origine</label><select id="transferFrom"></select></div><div class="field"><label>Ordine destinazione (stesso lotto)</label><select id="transferTo"></select></div><div class="field"><label>Quantità da trasferire (kg)</label><input id="transferQty" type="number" min="0" step="0.001" inputmode="decimal"></div></div><button type="button" id="transferSave">Trasferisci prenotazione</button><h2 style="margin-top:20px">Ordini registrati</h2><div id="orderList"></div></div>
+<div class="stockview" id="sv-movements"><h2>Conferma spedizione / uscita</h2><p class="muted">Registra i chili effettivamente caricati. Una fattura può essere evasa con più spedizioni, anche in giorni diversi.</p><div class="grid"><div class="field"><label>Ordine da evadere</label><select id="shipOrder"></select></div><div class="field"><label>Data spedizione</label><input type="date" id="shipDate"></div><div class="field"><label>Ora partenza</label><div class="actions"><input type="time" id="shipTime"><button class="small light" type="button" data-now="shipTime">Adesso</button></div></div><div class="field"><label>Chili effettivamente caricati</label><input id="shipQty" type="number" min="0" step="0.001" inputmode="decimal"></div><div class="field"><label>Colli effettivi</label><input id="shipBags" type="number" min="0" step="1"></div><div class="field"><label>Operatore</label><input id="shipOperator" readonly></div></div><div class="actions" style="margin-top:12px"><button id="shipSave" type="button">Conferma uscita e scarica stock</button></div><div class="line"></div><h2>Perdita / mortalità / scarto</h2><p class="muted">Le perdite riducono la giacenza solo dopo conferma. Allega un documento giustificativo quando disponibile. Verifica separatamente gli obblighi documentali applicabili.</p><div class="grid"><div class="field"><label>Carico / lotto</label><select id="lossLot"></select></div><div class="field"><label>Data</label><input type="date" id="lossDate"></div><div class="field"><label>Quantità perdita (kg)</label><input type="number" min="0" step="0.001" id="lossQty"></div><div class="field"><label>Causale</label><select id="lossReason"><option>Mortalità</option><option>Scarto</option><option>Altro</option></select></div></div><div class="field" style="margin-top:10px"><label>Riferimento documento / verbale</label><input id="lossDoc" placeholder="Numero documento"></div><div class="field" style="margin-top:10px"><label>Foto / PDF documento giustificativo</label><input type="file" id="lossFile" accept="image/*,.pdf,application/pdf"><p class="help">Il documento è incluso nell'esportazione di backup. Evita file molto grandi: l'archivio attuale è locale.</p></div><div class="field"><label>Note</label><textarea id="lossNotes"></textarea></div><div class="actions"><button id="lossSave" type="button" class="danger">Registra perdita e scarica stock</button></div></div>
+<div class="stockview" id="sv-ledger"><h2>Storico movimenti</h2><div class="actions"><button id="stockBackup" class="light" type="button">Esporta archivio completo JSON</button><button id="stockCSV" class="light" type="button">Esporta movimenti CSV</button></div><p class="help">Backup da conservare sul Mac. Le registrazioni non sono sincronizzate automaticamente tra dispositivi.</p><div id="stockLedger"></div></div>
+</section>
+</main><div id="printArea"></div><script>
+'use strict';
+const $=id=>document.getElementById(id);const KEY='ninfea-olbia-records-v1',OP='ninfea-olbia-operator-v1';const FIELDS=['date','carrier','plate','trailerPlate','seal','trailerTemp','sealStatus','origin','ddtNumber','ddtDate','supplier','recipient','goods','quantity','unit','packages','lot','faoZone','faoSubzone','productionMethod','ncCode','reference','arrival','entrance','departure','dwell','cratesEntry','outsideTemp','waterTemp','plantTemp','orderWeight','realWeight','stockDestination','visual','packaging','notes','operator','operator2'];let records=[],photos=[],currentId=null,step=0;try{records=JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){records=[]} $('operator').value=localStorage.getItem(OP)||'';$('date').value=new Date().toLocaleDateString('en-CA');
+function status(s){$('status').textContent=s}function saveDB(){try{localStorage.setItem(KEY,JSON.stringify(records));return true}catch(e){alert('Spazio di memoria insufficiente. Esporta i dati e riduci le fotografie.');return false}}
+function setStep(n){step=n;document.querySelectorAll('.step').forEach((el,i)=>el.classList.toggle('active',i===n));document.querySelectorAll('[data-step]').forEach((el,i)=>el.classList.toggle('active',i===n));window.scrollTo({top:0,behavior:'smooth'})}document.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>setStep(+b.dataset.step));document.querySelectorAll('[data-next]').forEach(b=>b.onclick=()=>setStep(+b.dataset.next));
+let substep=0;
+function setSubStep(n){substep=Math.max(0,Math.min(3,n));document.querySelectorAll('[data-subpanel]').forEach(el=>el.classList.toggle('subactive',Number(el.dataset.subpanel)===substep));document.querySelectorAll('[data-sub]').forEach(el=>el.classList.toggle('active',Number(el.dataset.sub)===substep));if(step===2)$('step2').scrollIntoView({behavior:'smooth',block:'start'});}
+document.querySelectorAll('[data-sub]').forEach(b=>b.addEventListener('click',()=>setSubStep(Number(b.dataset.sub))));
+document.querySelectorAll('[data-subnext]').forEach(b=>b.addEventListener('click',()=>setSubStep(Number(b.dataset.subnext))));
+// Navigation is exclusively manual using the visible buttons.
+setSubStep(0);
+function minutesBetween(a,b){if(!a||!b)return '';const x=a.split(':').map(Number),y=b.split(':').map(Number);let m=(y[0]*60+y[1])-(x[0]*60+x[1]);if(m<0)m+=1440;return Math.floor(m/60)+' h '+String(m%60).padStart(2,'0')+' min'}
+function calcDwell(){$('dwell').value=minutesBetween($('entrance').value,$('cratesEntry').value);const out=$('dwellHighlight');if(out)out.textContent=$('dwell').value||'In attesa degli orari'}
+$('entrance').onchange=calcDwell;$('cratesEntry').onchange=calcDwell;
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function compress(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{let w=img.width,h=img.height,max=1400;if(Math.max(w,h)>max){const f=max/Math.max(w,h);w=Math.round(w*f);h=Math.round(h*f)}const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);resolve(c.toDataURL('image/jpeg',.68))};img.onerror=reject;img.src=r.result};r.onerror=reject;r.readAsDataURL(file)})}
+function removePhoto(i){if(!confirm('Eliminare questa fotografia dalla scheda?'))return;const removed=photos.splice(i,1)[0];if(removed===lastSealPhoto)lastSealPhoto=null;renderPhotos();renderDDTPreview();renderSealPreview()}
+function photoRow(p,i){return `<div class="photo"><img src="${p.data}" alt="Foto allegata"><span>${esc(p.name)} ${p.ddt?'(DDT)':p.seal?'(SIGILLO)':p.visual?'(CONTROLLO VISIVO)':''}</span><button type="button" class="danger small" data-remove="${i}" aria-label="Elimina fotografia">✕ Elimina</button></div>`}
+function bindPhotoRemoval(el){el.querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>removePhoto(Number(b.dataset.remove)))}
+function renderPhotos(){const el=$('photoList');el.innerHTML=photos.map((p,i)=>photoRow(p,i)).join('');bindPhotoRemoval(el);renderSealPreview();renderVisualPreview()}
+function renderDDTPreview(){const list=photos.map((p,i)=>p.ddt?photoRow(p,i):'').join('');for(const id of ['ddtPreview','quickPreview']){$(id).innerHTML=list;bindPhotoRemoval($(id))}}
+function renderSealPreview(){const el=$('sealPreview');el.innerHTML=photos.map((p,i)=>p.seal?photoRow(p,i):'').join('');bindPhotoRemoval(el)}
+function renderVisualPreview(){const el=$('visualPreview');el.innerHTML=photos.map((p,i)=>p.visual?photoRow(p,i):'').join('');bindPhotoRemoval(el)}
+async function addVisualFiles(files){for(const file of [...files]){if(photos.length>=12){alert('Massimo 12 fotografie');break}try{photos.push({name:file.name||'Controllo visivo',data:await compress(file),visual:true})}catch(e){alert('Impossibile leggere la foto del controllo visivo')}}renderPhotos();renderDDTPreview()}
+for(const id of ['visualCamera','visualGallery'])$(id).addEventListener('change',async e=>{await addVisualFiles(e.target.files);e.target.value=''});
+async function addFiles(files,ddt){for(const file of [...files]){if(photos.length>=12){alert('Massimo 12 fotografie');break}try{photos.push({name:file.name||'Fotografia',data:await compress(file),ddt:!!ddt})}catch(e){alert('Impossibile leggere una fotografia')}}renderPhotos();renderDDTPreview()}$('photosInput').onchange=async e=>{await addFiles(e.target.files,false);e.target.value=''};$('ddtFile').onchange=async e=>{await addFiles(e.target.files,true);e.target.value=''};$('quickDDTCamera').onchange=async e=>{await addFiles(e.target.files,true);e.target.value='';$('quickStatus').textContent='Foto DDT allegata. Premi “Leggi e compila DDT dalla foto”.'};$('quickDDTGallery').onchange=async e=>{await addFiles(e.target.files,true);e.target.value='';$('quickStatus').textContent='Foto DDT allegate.'};$('quickGallery').onclick=()=>$('quickDDTGallery').click();
+async function loadScript(url){return new Promise((res,rej)=>{const s=document.createElement('script');s.src=url;s.onload=res;s.onerror=rej;document.head.appendChild(s)})}
+function guessDDT(text){const lines=text.split(/\n/).map(x=>x.trim()).filter(Boolean);const find=(regex)=>{for(const line of lines){const m=line.match(regex);if(m)return m[1].trim()}return ''};const values={ddtNumber:find(/(?:n[.°º]?|numero)\s*(?:ddt|d\.?d\.?t\.?)?\s*[:#-]?\s*([A-Z0-9\/-]{2,})/i)||find(/(?:DDT|DOCUMENTO DI TRASPORTO)\s*(?:N\.?|NUMERO)?\s*[:#-]?\s*([A-Z0-9\/-]{2,})/i),ddtDate:find(/(?:data|del)\s*[:\s]+(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i),quantity:find(/(?:quantit[aà]|q\.?ta|peso netto|kg)\s*[:\s]+(\d+(?:[.,]\d+)?)/i),lot:find(/(?:lotto|lot)\s*[:#-]?\s*([A-Z0-9\/-]+)/i)};if(values.ddtDate){const p=values.ddtDate.split(/[\/.-]/);if(p.length===3)values.ddtDate=(p[2].length===2?'20'+p[2]:p[2])+'-'+p[1].padStart(2,'0')+'-'+p[0].padStart(2,'0')}if(values.quantity)values.quantity=values.quantity.replace(',','.');let n=0;for(const [k,v] of Object.entries(values))if(v){$(k).value=v;n++}return n}
+async function runDDTOCR(){const p=photos.find(x=>x.ddt);if(!p){alert('Allega prima una foto del DDT.');return}const b=$('readDDT'),q=$('quickOCR');b.disabled=true;q.disabled=true;b.textContent='Lettura in corso…';q.textContent='Lettura in corso…';try{if(!window.Tesseract)await loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js');const result=await Tesseract.recognize(p.data,'ita+eng',{logger:()=>{}});const n=guessDDT(result.data.text);$('quickStatus').textContent=`Lettura completata: ${n} campi compilati. Controllali nello step 2.`;setStep(1);alert(`Lettura terminata. Campi compilati: ${n}. Verifica tutti i dati con il DDT originale: il riconoscimento può commettere errori.`)}catch(e){alert('OCR non disponibile. Verifica la connessione internet e compila il DDT manualmente.')}finally{b.disabled=false;q.disabled=false;b.textContent='Leggi dati dalla foto (OCR)';q.textContent='Leggi e compila DDT dalla foto'}}
+$('readDDT').onclick=runDDTOCR;$('quickOCR').onclick=runDDTOCR;
+// Foto sigillo: conservata con la scheda, numero proposto via OCR e sempre correggibile.
+let lastSealPhoto=null;
+$('sealCamera').addEventListener('change',async e=>{const f=e.target.files?.[0];if(!f)return;if(photos.length>=12){alert('Massimo 12 fotografie per scheda.');e.target.value='';return}try{const data=await compress(f);const photo={name:'Fotografia sigillo',data,seal:true,ddt:false};photos.push(photo);lastSealPhoto=photo;renderPhotos();$('sealOCRStatus').textContent='Foto allegata. Premi “Leggi numero dalla foto” per compilare il campo.'}catch(err){alert('Impossibile allegare la foto del sigillo.')}e.target.value=''});
+$('sealOCR').onclick=async()=>{const photo=lastSealPhoto&&photos.includes(lastSealPhoto)?lastSealPhoto:[...photos].reverse().find(p=>p.seal);if(!photo){alert('Fotografa prima il sigillo.');return}const b=$('sealOCR');b.disabled=true;$('sealOCRStatus').textContent='Riconoscimento in corso…';try{if(!window.Tesseract)await loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js');const result=await Tesseract.recognize(photo.data,'eng',{logger:()=>{}});const tokens=(result.data.text.toUpperCase().match(/[A-Z0-9]{4,}/g)||[]).filter(x=>/\d/.test(x));if(tokens.length){$('seal').value=tokens.sort((a,b)=>b.length-a.length)[0];$('sealOCRStatus').textContent='Numero proposto: '+$('seal').value+'. Controllalo sulla foto e correggilo se necessario.'}else{$('sealOCRStatus').textContent='Numero non riconosciuto: inseriscilo manualmente. La foto resta allegata.'}}catch(err){$('sealOCRStatus').textContent='Lettura non disponibile (serve internet per caricare il riconoscimento). Scrivi il numero manualmente; la foto resta allegata.'}finally{b.disabled=false}};
+// Pulsanti rapidi: i menu restano sempre editabili.
+for(const id of ['sealStatus','visual','packaging']){const select=$(id);if(!select)continue;const bar=document.createElement('div');bar.className='quickChoices';for(const opt of [...select.options].filter(o=>o.value)){const b=document.createElement('button');b.type='button';b.textContent=opt.textContent;b.onclick=()=>{select.value=opt.value;select.dispatchEvent(new Event('change'))};bar.appendChild(b)}const update=()=>{[...bar.children].forEach(b=>b.classList.toggle('chosen',b.textContent===select.selectedOptions[0]?.textContent))};select.addEventListener('change',update);select.insertAdjacentElement('afterend',bar);update()}
+
+function weightDelta(){const a=$('quantity').value,b=$('realWeight').value;if(a===''||b===''||$('unit').value!=='kg')return '';const n=Number(b)-Number(a);return Number.isFinite(n)?String(Math.round(n*1000)/1000):''}
+function updateWeightCompare(){const el=$('weightCompare'),d=weightDelta(),fmt=n=>Number(n).toLocaleString('it-IT',{maximumFractionDigits:3});el.classList.toggle('mismatch',d!==''&&Number(d)!==0);el.classList.toggle('match',d!==''&&Number(d)===0);const ddt=$('quantity').value,order=$('orderWeight').value,real=$('realWeight').value;el.innerHTML=`<div>DDT: <b>${ddt!==''?fmt(ddt)+' kg':'—'}</b></div><div>Ordine: <b>${order!==''?fmt(order)+' kg':'—'}</b></div><div>Peso reale: <b>${real!==''?fmt(real)+' kg':'—'}</b></div><hr>${d===''?'Inserisci il peso reale per verificare il DDT':Number(d)===0?'✓ PESO REALE CORRISPONDENTE AL DDT':`⚠ ATTENZIONE: PESO REALE DIVERSO DAL DDT<br>Differenza: ${Number(d)>0?'+':''}${fmt(d)} kg`}`;}
+for(const id of ['quantity','orderWeight','realWeight','unit'])$(id).addEventListener('input',updateWeightCompare);
+function upperText(value){return String(value??'').toLocaleUpperCase('it-IT')}
+function normalizeTextInputs(root=document){
+ root.querySelectorAll('input:not([type]),input[type="text"],input[type="search"],textarea').forEach(el=>{
+  if(el.readOnly||el.disabled)return;
+  const v=upperText(el.value);if(el.value!==v)el.value=v;
+ });
+ root.querySelectorAll('select').forEach(el=>{
+  // Values remain unchanged for application logic; display labels are uppercase.
+  Array.from(el.options).forEach(opt=>{opt.textContent=upperText(opt.textContent)});
+ });
+}
+document.addEventListener('input',e=>{
+ const el=e.target;
+ if(!el.matches('input:not([type]),input[type="text"],input[type="search"],textarea')||el.readOnly)return;
+ const pos=el.selectionStart, end=el.selectionEnd;
+ const upper=upperText(el.value);
+ if(upper!==el.value){
+  el.value=upper;
+  try{el.setSelectionRange(pos,end)}catch(_){}
+ }
+});
+document.addEventListener('change',e=>{
+ const el=e.target;
+ if(el.matches('input:not([type]),input[type="text"],input[type="search"],textarea')&&!el.readOnly)el.value=upperText(el.value);
+});
+normalizeTextInputs();
+function getRecord(){const r={id:currentId||crypto.randomUUID(),updatedAt:new Date().toISOString(),photos:photos.map(x=>({...x})),includePhotos:$('includePhotos').checked};for(const f of FIELDS){const el=$(f);r[f]=el.matches('input:not([type]),input[type="text"],textarea')?upperText(el.value):el.value;}r.weightDifference=weightDelta();return r}
+function save(){if(!$('operator').value.trim()){alert('Inserisci il nome dell’operatore principale.');setStep(0);return}if(!$('date').value){alert('Inserisci la data.');setStep(0);return}if(weightDelta()!==''&&Number(weightDelta())!==0){if(!confirm('⚠ ATTENZIONE: il peso reale non corrisponde al peso dichiarato sul DDT. Differenza: '+weightDelta()+' kg. Vuoi salvare comunque la scheda con questa anomalia?')){setStep(2);setSubStep(2);return false}}const r=getRecord();if(!Number.isFinite(Number(r.realWeight))||Number(r.realWeight)<=0){alert('Per alimentare il magazzino inserisci il peso reale positivo rilevato in stabilimento.');setStep(2);setSubStep(2);return false}const movements=JSON.parse(localStorage.getItem('ninfea-olbia-stock-v3')||'{"orders":[],"moves":[]}');const used=(movements.moves||[]).filter(m=>m.lotId===r.id).reduce((a,m)=>a+Number(m.qty||0),0);const committed=(movements.orders||[]).filter(o=>o.lotId===r.id&&!o.cancelled).reduce((a,o)=>{const sent=(movements.moves||[]).filter(m=>m.kind==='spedizione'&&m.orderId===o.id).reduce((v,m)=>v+Number(m.qty||0),0);return a+Math.max(0,Number(o.qty||0)-sent)},0);if(records.some(x=>x.id===r.id)&&((records.find(x=>x.id===r.id).stockDestination||'commerciale')!==r.stockDestination)&&((movements.moves||[]).some(m=>m.lotId===r.id)||(movements.orders||[]).some(o=>o.lotId===r.id))){alert('Non puoi cambiare destinazione a un lotto con movimenti o ordini: utilizza la raccolta o una rettifica documentata.');return false}if(r.stockDestination==='mare'&&committed>0){alert('Un lotto in mare non può avere ordini riservati.');return false}if(Number(r.realWeight)+0.00001<used+committed){alert('Modifica non consentita: il peso reale non può essere inferiore ai '+(used+committed).toLocaleString('it-IT')+' kg già spediti, scartati o riservati. Correggi prima i movimenti o le prenotazioni.');return false}let i=records.findIndex(x=>x.id===r.id);if(i>=0){r.createdAt=records[i].createdAt;r.revisions=(records[i].revisions||[]).concat([{at:r.updatedAt,operator:r.operator,previous:withoutPhotos(records[i])}]);records[i]=r}else{r.createdAt=r.updatedAt;r.revisions=[];records.unshift(r)}if(!saveDB())return false;window.dispatchEvent(new Event('ninfea-records-updated'));localStorage.setItem(OP,r.operator);currentId=r.id;renderHistory();status('Scheda salvata. Preparazione PDF e condivisione…');return true}function withoutPhotos(r){const c={...r};delete c.photos;delete c.revisions;return c}const newReceiptButton=document.createElement('button');newReceiptButton.type='button';newReceiptButton.className='light';newReceiptButton.textContent='＋ NUOVO RICEVIMENTO';newReceiptButton.onclick=()=>reset();$('save').insertAdjacentElement('afterend',newReceiptButton);$('save').onclick=async()=>{const ok=save();if(ok){await sharePDF();status('Scheda salvata. Per iniziare un nuovo ricevimento premi NUOVO RICEVIMENTO.')}};
+function reset(){currentId=null;photos=[];for(const f of FIELDS)if(f!=='operator'&&f!=='recipient')$(f).value='';$('recipient').value='NINFEA SRL';$('stockDestination').value='commerciale';$('date').value=new Date().toLocaleDateString('en-CA');$('includePhotos').checked=true;lastSealPhoto=null;renderPhotos();renderDDTPreview();calcDwell();updateWeightCompare();setSubStep(0);setStep(0);status('Nuova scheda pronta.')}function openRecord(id){const r=records.find(x=>x.id===id);if(!r)return;document.querySelector('[data-go="receive"]')?.click();currentId=id;for(const f of FIELDS)$(f).value=r[f]??(f==='stockDestination'?'commerciale':'');photos=(r.photos||[]).map(x=>({...x}));lastSealPhoto=null;$('includePhotos').checked=r.includePhotos!==false;renderPhotos();renderDDTPreview();calcDwell();updateWeightCompare();setSubStep(0);setStep(0);status('Scheda caricata per consultazione o modifica.')}function renderHistory(){const h=$('history');if(!records.length){h.textContent='Nessuna registrazione salvata.';return}h.innerHTML=records.map(r=>`<div class="rec"><b>${esc(r.date)} · ${esc(r.carrier||'Vettore non indicato')}</b><div class="muted">DDT ${esc(r.ddtNumber||'—')} · ${esc(r.operator||'—')} · ${esc(r.goods||'')}</div><div class="actions"><button class="small light" data-open="${esc(r.id)}">Apri / modifica</button><button class="small light" data-print="${esc(r.id)}">Stampa</button></div></div>`).join('');h.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>openRecord(b.dataset.open));h.querySelectorAll('[data-print]').forEach(b=>b.onclick=()=>{openRecord(b.dataset.print);printSelected(false)})}$('new').onclick=()=>{reset();document.querySelector('[data-go="receive"]')?.click()};
+const groups=[['Trasportatore',[['Data ricevimento','date'],['Operatore','operator'],['Secondo operatore','operator2'],['Vettore','carrier'],['Targa motrice','plate'],['Targa rimorchio','trailerPlate'],['Sigillo','seal'],['Stato sigillo','sealStatus'],['Temperatura rimorchio (°C)','trailerTemp'],['Provenienza','origin']]],['Documento di trasporto',[['Numero DDT','ddtNumber'],['Data DDT','ddtDate'],['Fornitore','supplier'],['Destinatario','recipient'],['Merce','goods'],['Peso dichiarato su DDT','quantity'],['Unità','unit'],['Colli / sacchi','packages'],['Lotto','lot'],['Riferimento','reference']]],['Controlli all’arrivo',[['Arrivo nel piazzale','arrival'],['Inizio scarico','departure'],['Fine scarico','entrance'],['Ingresso casse nello stabilimento','cratesEntry'],['Tempo di sosta delle casse','dwell'],['Temperatura esterna (°C)','outsideTemp'],['Temperatura acqua casse (°C)','waterTemp'],['Temperatura stabilimento (°C)','plantTemp'],['Peso ordine (kg)','orderWeight'],['Peso reale stabilimento (kg)','realWeight'],['Differenza reale - DDT (kg)','weightDifference'],['Controllo visivo','visual'],['Imballaggi','packaging'],['Note','notes']]]];
+function reportNum(v){return v==null||v===''?'—':String(v)}
+function reportValue(r,key){return esc(reportNum(r[key]))}
+function reportStatus(text,kind){return `<span class="reportStatus ${kind}">${esc(text)}</span>`}
+function printHTML(r,include){
+ const hasDDT=r.quantity!==''&&r.quantity!=null,hasReal=r.realWeight!==''&&r.realWeight!=null;
+ const diff=hasDDT&&hasReal?Number(r.realWeight)-Number(r.quantity):null;
+ const valid=diff!==null&&Number.isFinite(diff);
+ const equal=valid&&Math.abs(diff)<0.0005;
+ const orderDiff=r.orderWeight!==''&&r.orderWeight!=null&&hasDDT?Number(r.quantity)-Number(r.orderWeight):null;
+ const row=(label,value)=>`<div class="reportRow"><span>${label}</span><b>${value}</b></div>`;
+ const block=(title,body)=>`<section class="reportBlock"><h2>${title}</h2><div class="reportInner">${body}</div></section>`;
+ const weightBox=valid?reportStatus(equal?'CONFORME · Differenza 0 kg':`DIFFORMITÀ · ${diff>0?'+':''}${diff.toLocaleString('it-IT',{maximumFractionDigits:3})} kg`,equal?'good':'bad'):reportStatus('PESATURA DA COMPLETARE','neutral');
+ const orderNote=orderDiff!==null&&Number.isFinite(orderDiff)&&Math.abs(orderDiff)>=0.0005?`<div class="reportOrder">Scostamento DDT / ordine: <b>${orderDiff>0?'+':''}${orderDiff.toLocaleString('it-IT',{maximumFractionDigits:3})} kg</b></div>`:'';
+ const visualKind=/^conforme$/i.test(r.visual||'')?'good':/non conforme|da verificare/i.test(r.visual||'')?'bad':'neutral';
+ const sealKind=/integro/i.test(r.sealStatus||'')?'good':/non integro|rotto|manomesso/i.test(r.sealStatus||'')?'bad':'neutral';
+ const packKind=/integri/i.test(r.packaging||'')?'good':/danneggiat/i.test(r.packaging||'')?'bad':'neutral';
+ return `<article class="sheet reportA4">
+ <div class="reportHead"><div><h1>NINFEA SRL</h1><strong>REGISTRO RICEVIMENTO MERCE · V15</strong></div><div class="reportDate"><b>${reportValue(r,'date')}</b><span>DDT N. ${reportValue(r,'ddtNumber')}</span></div></div>
+ <div class="reportCols">
+ ${block('TRASPORTO',row('Vettore',reportValue(r,'carrier'))+row('Motrice / rimorchio',reportValue(r,'plate')+' / '+reportValue(r,'trailerPlate'))+row('Sigillo',reportValue(r,'seal')+' '+reportStatus(reportNum(r.sealStatus),sealKind))+row('Provenienza',reportValue(r,'origin'))+row('Temp. rimorchio',reportValue(r,'trailerTemp')+' °C'))}
+ ${block('DOCUMENTO E MERCE',row('Fornitore',reportValue(r,'supplier'))+row('DDT del',reportValue(r,'ddtDate'))+row('Prodotto',reportValue(r,'goods'))+row('Lotto',reportValue(r,'lot'))+row('Zona FAO',reportValue(r,'faoZone'))+row('Sottozona',reportValue(r,'faoSubzone'))+row('Produzione',reportValue(r,'productionMethod'))+row('Codice NC',reportValue(r,'ncCode'))+row('Colli / sacchi',reportValue(r,'packages')))}
+ </div>
+ ${block('TEMPI DI SCARICO E INGRESSO CASSE',`<div class="reportTimes">${[['Arrivo piazzale','arrival'],['Inizio scarico','departure'],['Fine scarico','entrance'],['Ingresso casse','cratesEntry']].map(([a,b])=>`<div><span>${a}</span><b>${reportValue(r,b)}</b></div>`).join('')}</div><div class="reportDwell"><span>TEMPO DI SOSTA DELLE CASSE</span><strong>${reportValue(r,'dwell')}</strong><small>Fine scarico → ingresso casse · senza valutazione automatica HACCP</small></div>`)}
+ <div class="reportCols">
+ ${block('TEMPERATURE',`<div class="reportMetrics">${[['Esterna','outsideTemp'],['Acqua casse','waterTemp'],['Stabilimento','plantTemp']].map(([a,b])=>`<div><span>${a}</span><b>${reportValue(r,b)} °C</b></div>`).join('')}</div>`)}
+ ${block('VERIFICA PESI',`<div class="reportMetrics">${[['Ordine','orderWeight'],['DDT','quantity'],['Reale','realWeight']].map(([a,b])=>`<div><span>${a}</span><b>${reportValue(r,b)} kg</b></div>`).join('')}</div><div class="reportWeight">${weightBox}</div>${orderNote}`)}
+ </div>
+ <div class="reportCols">
+ ${block('CONTROLLO VISIVO',reportStatus(reportNum(r.visual),visualKind))}
+ ${block('IMBALLAGGI',reportStatus(reportNum(r.packaging),packKind))}
+ </div>
+ ${block('NOTE / ANOMALIE',`<div class="reportNotes">${reportValue(r,'notes')}</div>`)}
+ <div class="reportFooter"><span>Operatore: <b>${reportValue(r,'operator')}</b></span><span>Secondo operatore: <b>${reportValue(r,'operator2')}</b></span><span>Firma: __________________</span></div>
+ </article>${include&&(r.photos||[]).length?`<section class="photoAppendix">${r.photos.map(p=>`<div class="photoFull"><h2>NINFEA SRL · ${esc(p.ddt?'Foto DDT':p.seal?'Sigillo':p.visual?'Controllo visivo':'Foto allegata')}</h2><img src="${p.data}" alt="Foto allegata"><p>${esc(p.name||'')}</p></div>`).join('')}</section>`:''}`;
+}
+function printSelected(two){let r=currentId?records.find(x=>x.id===currentId):null;if(!r){alert('Salva o apri prima una scheda.');return}const include=$('includePhotos').checked;$('printArea').innerHTML=printHTML(r,include);if(two){status('La modalità due per pagina è disponibile dallo storico con due schede: per il ricevimento corrente viene stampata la singola scheda.')}window.print()}
+
+function printCurrentSection(){
+ const mode=document.body.dataset.activeModule||'receive';
+ if(mode==='receive'||mode==='archive'){
+  const r=mode==='archive'?(currentId?records.find(x=>x.id===currentId):records[0]):getRecord();
+  if(!r){alert('Nessuna scheda disponibile per la stampa.');return}
+  $('printArea').innerHTML=printHTML(r,$('includePhotos').checked);window.print();return;
+ }
+ const labels={overview:'GIACENZE',orders:'ORDINI',movements:'SPEDIZIONI',waste:'SCARTI'};
+ const tab=mode==='waste'?'movements':mode;
+ const root=$('sv-'+tab);
+ if(!root){alert('Sezione non disponibile');return}
+ const copy=root.cloneNode(true);
+ copy.querySelectorAll('button,input[type=file]').forEach(n=>n.remove());
+ copy.querySelectorAll('input,select,textarea').forEach(n=>{
+   const span=document.createElement('span');span.textContent=n.type==='checkbox'?(n.checked?'Sì':'No'):(n.value||'—');n.replaceWith(span);
+ });
+ copy.querySelectorAll('[id]').forEach(n=>n.removeAttribute('id'));
+ $('printArea').innerHTML='<article class="sheet reportA4"><div class="reportHead"><h1>NINFEA SRL · '+labels[mode]+'</h1><b>'+new Date().toLocaleDateString('it-IT')+'</b></div><div class="sectionSnapshot">'+copy.innerHTML+'</div></article>';
+ window.print();
+}
+document.querySelectorAll('[data-go]').forEach(btn=>btn.addEventListener('click',()=>{document.body.dataset.activeModule=btn.dataset.go;}));
+$('printAnywhere').onclick=printCurrentSection;
+$('pdfAnywhere').onclick=async()=>{
+ const mode=document.body.dataset.activeModule||'receive';
+ if(mode==='receive'){
+  // Crea PDF dalla scheda corrente anche senza salvataggio, senza alterare l'archivio.
+  await sharePDF(getRecord(),true);return;
+ }
+ if(mode==='archive'){
+  const r=currentId?records.find(x=>x.id===currentId):records[0];
+  if(!r){alert('Non ci sono schede archiviate.');return}
+  await sharePDF(r,true);return;
+ }
+ alert('Per questa sezione scegli Stampa e poi “Salva come PDF” nel menu del dispositivo.');
+};
+$('printOne').onclick=()=>printSelected(false);$('printTwo').onclick=()=>{const arr=records.slice(0,2);if(arr.length<2){printSelected(false);return}const inc=$('includePhotos').checked;$('printArea').innerHTML=arr.map(r=>printHTML(r,inc)).join('');const style=document.createElement('style');style.id='temp2';style.textContent='@media print{.sheet{page-break-after:auto!important;break-inside:avoid;font-size:8pt}.sheet h1{font-size:14pt}.sheet h2{font-size:9pt;margin:2mm 0 1mm}.pfield{padding:.5mm 0}.photoPage{break-before:page}}';document.head.appendChild(style);window.print();setTimeout(()=>style.remove(),1000)};
+async function sharePDF(override=null,downloadOnly=false){const r=override||(currentId?records.find(x=>x.id===currentId):null);if(!r){alert('Salva o apri prima una scheda.');return}const include=$('includePhotos').checked;const b=$('share');b.disabled=true;status('Preparazione PDF…');try{if(!window.jspdf)await loadScript('https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js');const {jsPDF}=window.jspdf;const doc=new jsPDF({unit:'mm',format:'a4'});const fmt=v=>v==null||v===''?'—':String(v);
+const missing=v=>v===null||v===undefined||String(v).trim()==='';
+const n=v=>Number(String(v).replace(',','.'));
+const ready=!missing(r.quantity)&&!missing(r.realWeight)&&Number.isFinite(n(r.quantity))&&Number.isFinite(n(r.realWeight));
+const delta=ready?n(r.realWeight)-n(r.quantity):null;
+const match=ready&&Math.abs(delta)<0.0005;
+const colors={navy:[16,52,83],ink:[28,50,72],muted:[88,108,125],pale:[229,239,247],line:[210,223,234],good:[11,116,65],bad:[188,29,46],warn:[145,100,32],white:[255,255,255]};
+const setC=(c)=>doc.setTextColor(...colors[c]);
+const fill=(c)=>doc.setFillColor(...colors[c]);
+function t(v,x,y,size=9,bold=false,c='ink',max=80){
+ doc.setFont('helvetica',bold?'bold':'normal');doc.setFontSize(size);setC(c);
+ const str=String(v??'—').replace(/[^\x20-\x7E\xA0-\xFF]/g,ch=>({'→':'>','·':'-','−':'-','°':'°','—':'-','✓':'OK'}[ch]||''));
+ doc.text(str,x,y,{maxWidth:max});
+}
+function bar(title,x,y,w){fill('navy');doc.roundedRect(x,y,w,8,1.3,1.3,'F');t(title,x+3,y+5.65,10,true,'white',w-5)}
+function panel(x,y,w,h){doc.setDrawColor(...colors.line);doc.setLineWidth(.3);doc.roundedRect(x,y,w,h,1.8,1.8,'S')}
+function field(label,value,x,y,width=81,em=false){
+ t(label,x,y,8,false,'muted',width*.43);t(fmt(value),x+width*.44,y,em?11:9,true,'ink',width*.55)
+}
+function badge(label,x,y,w,kind){
+ const color=colors[kind];doc.setFillColor(...color);doc.roundedRect(x,y,w,10,2,2,'F');t(label,x+3,y+7,10,true,'white',w-5)
+}
+fill('navy');doc.rect(0,0,210,30,'F');
+t('NINFEA SRL',12,14,19,true,'white',100);
+t('REGISTRO RICEVIMENTO MERCE  |  V15',12,22,9,false,'white',130);
+t('DATA  '+fmt(r.date),143,12,9,true,'white',59);
+t('DDT N.  '+fmt(r.ddtNumber),143,21,11,true,'white',59);
+panel(10,35,93,71);panel(107,35,93,71);
+bar('TRASPORTATORE',10,35,93);bar('DOCUMENTO DI TRASPORTO',107,35,93);
+[['Vettore',r.carrier],['Motrice',r.plate],['Rimorchio',r.trailerPlate],['Sigillo',r.seal],['Stato sigillo',r.sealStatus],['Provenienza',r.origin],['Temp. rimorchio',missing(r.trailerTemp)?'-':fmt(r.trailerTemp)+' °C']].forEach(([k,v],i)=>field(k,v,13,49+i*7.7,87,i===4));
+[['Fornitore',r.supplier],['Data DDT',r.ddtDate],['Merce',r.goods],['Zona FAO',r.faoZone],['Sottozona',r.faoSubzone],['Metodo',r.productionMethod],['Paese',r.origin],['Codice NC',r.ncCode],['Lotto',r.lot],['Colli / sacchi',r.packages]].forEach(([k,v],i)=>field(k,v,110,47.8+i*5.8,87));
+panel(10,110,190,48);bar('TEMPI DI SCARICO E INGRESSO CASSE',10,110,190);
+[['Arrivo piazzale',r.arrival],['Inizio scarico',r.departure],['Fine scarico',r.entrance],['Ingresso casse',r.cratesEntry]].forEach(([k,v],i)=>{
+ const x=14+i*46;t(k,x,125,8,false,'muted',44);t(fmt(v),x,134,15,true,'navy',43);
+});
+fill('pale');doc.roundedRect(13,139,184,15,2,2,'F');
+t('SOSTA DELLE CASSE',17,148.7,10,true,'navy',92);
+t(fmt(r.dwell),120,150,17,true,'navy',72);
+panel(10,162,93,51);panel(107,162,93,51);
+bar('TEMPERATURE  (°C)',10,162,93);bar('VERIFICA PESI  (kg)',107,162,93);
+[['Esterna',r.outsideTemp],['Acqua casse',r.waterTemp],['Stabilimento',r.plantTemp]].forEach(([k,v],i)=>field(k,missing(v)?'-':fmt(v)+' °C',13,176+i*11,86,true));
+[['Ordine',r.orderWeight],['DDT',r.quantity],['Reale stabilimento',r.realWeight]].forEach(([k,v],i)=>field(k,missing(v)?'-':fmt(v)+' kg',110,175+i*9.1,86,true));
+const status=ready?(match?'CONFORME · 0 kg':`DIFFORMITA · ${delta>0?'+':''}${delta.toLocaleString('it-IT',{maximumFractionDigits:3})} kg`):'PESO DA VERIFICARE';
+badge(status,110,199,87,ready?(match?'good':'bad'):'warn');
+const orderDelta=!missing(r.orderWeight)&&!missing(r.quantity)&&Number.isFinite(n(r.orderWeight))?n(r.quantity)-n(r.orderWeight):null;
+if(orderDelta!==null&&Math.abs(orderDelta)>.0005)t('DDT / ordine: '+(orderDelta>0?'+':'')+orderDelta.toFixed(3)+' kg',110,217,8,true,'warn',87);
+panel(10,222,93,29);panel(107,222,93,29);
+bar('CONTROLLO VISIVO',10,222,93);bar('IMBALLAGGI',107,222,93);
+const visualKind=/^conforme$/i.test(r.visual||'')?'good':/non conforme|da verificare/i.test(r.visual||'')?'bad':'warn';
+const packKind=/^integri$/i.test(r.packaging||'')?'good':/non integr|danneggiat/i.test(r.packaging||'')?'bad':'warn';
+t(fmt(r.visual),14,241,14,true,visualKind,85);
+t(fmt(r.packaging),111,241,14,true,packKind,85);
+panel(10,255,190,24);bar('NOTE E ANOMALIE',10,255,190);
+const notes=doc.splitTextToSize(fmt(r.notes),180).slice(0,2);
+t(notes.join('\n'),14,269,9,false,'ink',179);
+t('Operatore: '+fmt(r.operator),12,288,9,true,'navy',85);
+t('Firma: __________________________',117,288,9,false,'navy',80);
+ if(include){for(const p of r.photos||[]){doc.addPage();doc.setFontSize(12);doc.text('NINFEA SRL - '+(p.ddt?'Foto DDT':p.seal?'Sigillo n. '+(r.seal||'da verificare'):p.visual?'Controllo visivo':'Foto allegata'),15,16);const image=new Image();image.src=p.data;await new Promise(res=>{image.onload=res;image.onerror=res});let w=image.naturalWidth||1000,h=image.naturalHeight||1000,ratio=Math.min(180/w,245/h);doc.addImage(p.data,'JPEG',15,24,w*ratio,h*ratio)}}const blob=doc.output('blob'),file=new File([blob],`Ninfea_Olbia_DDT_${(r.ddtNumber||'scheda').replace(/[^a-z0-9_-]/gi,'_')}.pdf`,{type:'application/pdf'});if(!downloadOnly&&navigator.canShare?.({files:[file]})){await navigator.share({files:[file],title:'NINFEA SRL - ricevimento'})}else{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=file.name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5000);alert('PDF scaricato. Puoi condividerlo da File / Download su WhatsApp.')}status('PDF preparato.')}catch(e){status('Condivisione non riuscita: '+e.message+'. Usa Stampa scheda → Salva come PDF.')}finally{b.disabled=false}}
+$('share').onclick=()=>sharePDF();$('export').onclick=()=>{const blob=new Blob([JSON.stringify({exportedAt:new Date().toISOString(),records},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='ninfea-olbia-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),3000)};renderHistory();
+function showOperatorGate(){const stored=localStorage.getItem(OP)||'';$('gateName').value=stored;$('operatorGate').classList.remove('hidden');setTimeout(()=>$('gateName').focus(),80)}
+$('gateSave').onclick=()=>{const name=$('gateName').value.trim();if(name.length<3){alert('Inserisci nome e cognome.');return}localStorage.setItem(OP,name);$('operator').value=name;$('operatorGate').classList.add('hidden')};
+$('changeOperator').onclick=showOperatorGate;
+$('operator').addEventListener('change',()=>{const name=$('operator').value.trim();if(name)localStorage.setItem(OP,name)});
+if(!localStorage.getItem(OP))showOperatorGate();
+if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js?v=16').catch(()=>{});
+</script>
+<script>
+(function(){
+  const bar=document.getElementById('homeBar');
+  if(!bar)return;
+  const btn=document.createElement('button');
+  btn.type='button';btn.id='resetAllTestData';btn.className='light';
+  btn.textContent='🗑️ Azzera dati di prova';
+  btn.title='Cancella definitivamente ricevimenti, ordini, spedizioni e movimenti salvati su questo dispositivo';
+  btn.addEventListener('click',()=>{
+    if(!confirm('ATTENZIONE: verranno cancellati tutti i ricevimenti, gli ordini, le spedizioni e gli scarti salvati SU QUESTO DISPOSITIVO. Operazione irreversibile. Continuare?'))return;
+    const answer=prompt('Per confermare scrivi AZZERA in maiuscolo:');
+    if(answer!=='AZZERA'){alert('Azzeramento annullato.');return;}
+    // Preserve operator identity; reset only inventory and reception data.
+    localStorage.removeItem('ninfea-olbia-records-v1');
+    localStorage.removeItem('ninfea-olbia-stock-v3');
+    alert('Archivio locale azzerato. La pagina verrà ricaricata.');
+    location.reload();
+  });
+  bar.appendChild(btn);
+})();
+</script>
+<script>
+(function(){'use strict';
+const el=id=>document.getElementById(id), STORE='ninfea-olbia-stock-v3';
+let db={orders:[],moves:[],audit:[]};try{const v=JSON.parse(localStorage.getItem(STORE)||'null');if(v&&Array.isArray(v.orders)&&Array.isArray(v.moves))db=v}catch(e){}
+const num=v=>Number(String(v||'').replace(',','.'))||0,fmt=v=>Number(v||0).toLocaleString('it-IT',{maximumFractionDigits:3}),today=()=>new Date().toLocaleDateString('en-CA'),now=()=>new Date().toTimeString().slice(0,5);
+const rid=()=>typeof crypto!=='undefined'&&crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random();
+const esc2=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const recs=()=>{try{return JSON.parse(localStorage.getItem('ninfea-olbia-records-v1')||'[]')}catch(e){return []}};
+const allLots=()=>recs().filter(r=>num(r.realWeight)>0).map(r=>({id:r.id,label:`${r.date||''} · ${r.lot||'Lotto non indicato'} · ${r.ddtNumber||'Doc. non indicato'}`,qty:num(r.realWeight),lot:r.lot||'',date:r.date||'',destination:r.stockDestination||'commerciale'}));const lots=()=>allLots().filter(l=>l.destination==='commerciale');const seaLots=()=>allLots().filter(l=>l.destination==='mare');
+const stock=id=>{const l=allLots().find(x=>x.id===id);return l?Math.round((l.qty-db.moves.filter(m=>m.lotId===id).reduce((a,m)=>a+num(m.qty),0))*1000)/1000:0};
+const delivered=id=>db.moves.filter(m=>m.kind==='spedizione'&&m.orderId===id).reduce((a,m)=>a+num(m.qty),0);
+const reserved=id=>db.orders.filter(o=>o.lotId===id&&!o.cancelled).reduce((a,o)=>a+Math.max(0,num(o.qty)-delivered(o.id)),0);
+const free=id=>Math.round((stock(id)-reserved(id))*1000)/1000;
+const round=v=>Math.round(v*1000)/1000;
+const validLot=id=>stock(id)>=-0.00001&&free(id)>=-0.00001;
+const audit=(action,details)=>{db.audit=db.audit||[];db.audit.push({at:new Date().toISOString(),operator:localStorage.getItem('ninfea-olbia-operator-v1')||'',action,details})};
+function persist(){try{localStorage.setItem(STORE,JSON.stringify(db));return true}catch(e){alert('Memoria insufficiente: non è stato possibile salvare. Esporta il backup e libera spazio.');return false}}
+function options(node,items,empty){const selected=node.value;node.innerHTML='<option value="">'+esc2(empty)+'</option>'+items.map(x=>`<option value="${esc2(x.id)}">${esc2(x.label)}</option>`).join('');if(items.some(x=>x.id===selected))node.value=selected}
+function render(){const ls=lots(),out=db.moves.filter(m=>m.kind==='spedizione').reduce((a,m)=>a+num(m.qty),0),loss=db.moves.filter(m=>m.kind==='perdita').reduce((a,m)=>a+num(m.qty),0);el('stockSea').textContent=fmt(seaLots().reduce((a,l)=>a+stock(l.id),0))+' kg';el('stockSeaLots').innerHTML=seaLots().length?seaLots().map(l=>'<div class="movement"><b>'+esc2(l.label)+'</b> · In mare: '+fmt(stock(l.id))+' kg</div>').join(''):'Nessun lotto in mare.';el('stockTotal').textContent=fmt(ls.reduce((a,l)=>a+stock(l.id),0))+' kg';el('stockOut').textContent=fmt(out)+' kg';el('stockLoss').textContent=fmt(loss)+' kg';el('stockPending').textContent=fmt(ls.reduce((a,l)=>a+reserved(l.id),0))+' kg';el('stockFree').textContent=fmt(ls.reduce((a,l)=>a+free(l.id),0))+' kg';
+el('stockLots').innerHTML=ls.length?ls.map(l=>`<div class="movement"><b>${esc2(l.label)}</b><div>Peso reale ricevuto: ${fmt(l.qty)} kg · Giacenza fisica: ${fmt(stock(l.id))} kg · Di cui ordinati: ${fmt(reserved(l.id))} kg · <strong class="${free(l.id)<0?'warn':'ok'}">Disponibili per nuovi ordini: ${fmt(free(l.id))} kg</strong></div></div>`).join(''):'Nessun ricevimento con peso reale positivo. Verifica le pesature dei ricevimenti precedenti.';
+options(el('adjLot'),allLots(),'Seleziona lotto');options(el('harvestLot'),seaLots(),'Seleziona lotto in mare');options(el('ordLot'),ls,'Seleziona carico ricevuto');options(el('lossLot'),ls,'Seleziona carico');
+options(el('shipOrder'),db.orders.filter(o=>!o.cancelled&&num(o.qty)>delivered(o.id)).map(o=>({id:o.id,label:`${o.number} · ${o.client} · da evadere ${fmt(Math.max(0,num(o.qty)-delivered(o.id)))} kg`})),'Seleziona ordine');
+options(el('transferFrom'),db.orders.filter(o=>!o.cancelled&&num(o.qty)>delivered(o.id)).map(o=>({id:o.id,label:`${o.number} · ${o.client} · ${fmt(num(o.qty)-delivered(o.id))} kg riservati`})),'Ordine di origine');
+options(el('transferTo'),db.orders.filter(o=>!o.cancelled).map(o=>({id:o.id,label:`${o.number} · ${o.client}`})),'Ordine destinatario');
+el('orderList').innerHTML=db.orders.length?db.orders.slice().reverse().map(o=>{const remain=num(o.qty)-delivered(o.id);return `<div class="movement"><b>${esc2(o.number)} · ${esc2(o.client)}</b><div class="muted">${esc2(o.date)} · ${esc2(lots().find(l=>l.id===o.lotId)?.label||'Carico non trovato')}</div><div>Ordinati ${fmt(o.qty)} kg · Spediti ${fmt(delivered(o.id))} kg · <b>${o.cancelled?'Annullato':'Riservati'} ${fmt(o.cancelled?0:Math.max(0,remain))} kg</b></div><button class="small light" type="button" data-shiporder="${esc2(o.id)}">Registra spedizione</button> <button class="small light" type="button" data-editorder="${esc2(o.id)}">Modifica ordine</button> <button class="small light" type="button" data-cancelorder="${esc2(o.id)}">${o.cancelled?'Annullato':'Annulla residuo'}</button></div>`}).join(''):'Nessun ordine.';
+el('stockLedger').innerHTML=db.moves.length?db.moves.slice().reverse().map(m=>`<div class="movement"><b>${m.kind==='perdita'?'Perdita':'Spedizione'} · ${fmt(m.qty)} kg</b> <span class="pill">${esc2(m.date)}</span><div class="muted">${esc2(m.lotLabel||'')} · ${esc2(m.operator||'')}</div><div>${esc2(m.detail||'')}</div>${m.docData?'<span class="pill">Documento allegato</span>':''} <button class="small light" type="button" data-editmove="${esc2(m.id)}">Correggi movimento</button></div>`).join(''):'Nessun movimento.';
+document.querySelectorAll('[data-editmove]').forEach(b=>b.onclick=()=>editMove(b.dataset.editmove));
+el('shipOperator').value=localStorage.getItem('ninfea-olbia-operator-v1')||'';
+document.querySelectorAll('[data-shiporder]').forEach(b=>b.onclick=()=>{show('movements');el('shipOrder').value=b.dataset.shiporder;el('shipQty').focus()});
+document.querySelectorAll('[data-editorder]').forEach(b=>b.onclick=()=>editOrder(b.dataset.editorder));
+document.querySelectorAll('[data-cancelorder]').forEach(b=>b.onclick=()=>cancelOrder(b.dataset.cancelorder));}
+function show(name){document.querySelectorAll('[data-stocktab]').forEach(b=>b.classList.toggle('on',b.dataset.stocktab===name));document.querySelectorAll('.stockview').forEach(v=>v.classList.toggle('on',v.id==='sv-'+name));render()}
+document.querySelectorAll('[data-stocktab]').forEach(b=>b.onclick=()=>show(b.dataset.stocktab));
+document.querySelectorAll('[data-now]').forEach(b=>b.onclick=()=>{el(b.dataset.now).value=now();el(b.dataset.now).dispatchEvent(new Event('change'))});
+['ordDate','shipDate','lossDate'].forEach(id=>el(id).value=today());
+let editingOrder=null;
+function clearOrder(){editingOrder=null;['ordNumber','ordClient','ordQty','ordBags','ordNotes'].forEach(id=>el(id).value='');el('ordEditing').textContent='';el('ordSave').textContent='Registra ordine e riserva';render()}
+el('ordNew').onclick=clearOrder;
+function editOrder(id){const o=db.orders.find(x=>x.id===id);if(!o)return;editingOrder=id;el('ordNumber').value=o.number;el('ordDate').value=o.date;el('ordClient').value=o.client;el('ordQty').value=o.qty;el('ordBags').value=o.bags;el('ordNotes').value=o.notes;el('ordLot').value=o.lotId;el('ordEditing').textContent='Modifica ordine '+o.number;el('ordSave').textContent='Salva modifica ordine';el('ordNumber').scrollIntoView({behavior:'smooth',block:'center'})}
+function cancelOrder(id){const o=db.orders.find(x=>x.id===id);if(!o||o.cancelled)return;const remaining=num(o.qty)-delivered(o.id);if(!confirm('Annullare i '+fmt(remaining)+' kg ancora riservati per '+o.client+'? Le spedizioni già eseguite rimangono registrate.'))return;const before={...o};o.cancelled=true;audit('ANNULLAMENTO ORDINE',{id,remaining});if(!persist()){Object.assign(o,before);db.audit.pop();return}render()}
+el('ordSave').onclick=()=>{const lotId=el('ordLot').value,qty=num(el('ordQty').value),number=el('ordNumber').value.trim();if(!lotId||!number||qty<=0){alert('Seleziona il carico, inserisci numero documento e quantità ordinata.');return}const old=editingOrder?db.orders.find(o=>o.id===editingOrder):null;if(old&&old.cancelled){alert('Ordine annullato: crea un nuovo ordine.');return}if(old&&old.lotId!==lotId&&delivered(old.id)>0){alert('Non puoi cambiare lotto dopo una spedizione.');return}if(old&&qty<delivered(old.id)){alert('La quantità non può essere inferiore a quanto già spedito.');return}const duplicate=db.orders.some(o=>o.id!==editingOrder&&o.number.toLowerCase()===number.toLowerCase()&&o.lotId===lotId);if(duplicate&&!confirm('Esiste già un ordine con questo numero per lo stesso carico. Continuare?'))return;const previous=old?{...old}:null;const o=old||{id:rid(),operator:localStorage.getItem('ninfea-olbia-operator-v1')||'',at:new Date().toISOString()};Object.assign(o,{lotId,number,date:el('ordDate').value,client:el('ordClient').value,qty,bags:num(el('ordBags').value),notes:el('ordNotes').value,updatedAt:new Date().toISOString()});if(!old)db.orders.push(o);if(!lots().some(l=>l.id===lotId)||!validLot(lotId)||(previous&&previous.lotId!==lotId&&!validLot(previous.lotId))){if(old)Object.assign(o,previous);else db.orders.pop();alert('Quantità superiore alla disponibilità effettiva del lotto. Non è possibile impegnare merce già riservata.');return}audit(old?'MODIFICA ORDINE':'NUOVO ORDINE',{id:o.id,previous,updated:{...o}});if(!persist()){if(old)Object.assign(o,previous);else db.orders.pop();db.audit.pop();return}clearOrder();alert('Ordine salvato. Prenotazione aggiornata; giacenza fisica invariata.');};
+el('transferSave').onclick=()=>{const from=db.orders.find(o=>o.id===el('transferFrom').value),to=db.orders.find(o=>o.id===el('transferTo').value),qty=num(el('transferQty').value);if(!from||!to||from.id===to.id||from.cancelled||to.cancelled||from.lotId!==to.lotId||qty<=0||qty>round(num(from.qty)-delivered(from.id))){alert('Seleziona due ordini attivi dello stesso lotto e una quantità non superiore a quella ancora riservata.');return}if(!confirm('Trasferire '+fmt(qty)+' kg di prenotazione da '+from.client+' a '+to.client+'? Le quantità ordinate dei due documenti verranno aggiornate.'))return;from.qty=round(num(from.qty)-qty);to.qty=round(num(to.qty)+qty);audit('TRASFERIMENTO PRENOTAZIONE',{from:from.id,to:to.id,qty});if(!persist()){from.qty=round(num(from.qty)+qty);to.qty=round(num(to.qty)-qty);db.audit.pop();return}el('transferQty').value='';render();alert('Prenotazione trasferita. Giacenza fisica invariata.');};
+
+el('shipSave').onclick=()=>{const o=db.orders.find(x=>x.id===el('shipOrder').value),qty=num(el('shipQty').value);if(!o||qty<=0){alert('Seleziona ordine e quantità effettivamente spedita.');return}const available=stock(o.lotId),remaining=num(o.qty)-delivered(o.id);if(qty>available+0.00001){alert('Quantità superiore alla giacenza disponibile ('+fmt(available)+' kg).');return}if(qty>remaining+0.00001){alert('Quantità superiore alla quantità ancora da evadere ('+fmt(remaining)+' kg).');return}if(!confirm(`Confermi uscita di ${fmt(qty)} kg? Questa operazione scarica la giacenza del lotto.`))return;const m={id:rid(),kind:'spedizione',lotId:o.lotId,lotLabel:lots().find(l=>l.id===o.lotId)?.label||'',orderId:o.id,qty,bags:num(el('shipBags').value),date:el('shipDate').value,time:el('shipTime').value,operator:localStorage.getItem('ninfea-olbia-operator-v1')||'',detail:'Fattura / ordine '+o.number,at:new Date().toISOString()};db.moves.push(m);if(!persist()){db.moves.pop();return}el('shipQty').value='';el('shipBags').value='';render();alert('Uscita registrata. Giacenza aggiornata.');};
+const readFile=file=>new Promise((resolve,reject)=>{if(!file)return resolve(null);if(file.size>2.5*1024*1024)return reject(new Error('Documento troppo grande: massimo 2,5 MB in questa versione.'));const r=new FileReader();r.onload=()=>resolve({name:file.name,type:file.type,data:r.result});r.onerror=reject;r.readAsDataURL(file)});
+el('lossSave').onclick=async()=>{const lotId=el('lossLot').value,qty=num(el('lossQty').value);if(!lotId||qty<=0){alert('Seleziona carico e quantità persa.');return}if(qty>free(lotId)){alert('La perdita supera la disponibilità non riservata del lotto. Prima libera le prenotazioni necessarie.');return}let docData=null;try{docData=await readFile(el('lossFile').files[0])}catch(e){alert(e.message);return}if(!docData&&!el('lossDoc').value.trim()){alert('Inserisci un riferimento al documento giustificativo oppure allega il documento.');return}if(!confirm(`Registrare ${fmt(qty)} kg come perdita? La giacenza diminuirà.`))return;const m={id:rid(),kind:'perdita',lotId,lotLabel:lots().find(l=>l.id===lotId)?.label||'',qty,date:el('lossDate').value,operator:localStorage.getItem('ninfea-olbia-operator-v1')||'',detail:el('lossReason').value+' · '+el('lossDoc').value+' · '+el('lossNotes').value,docData,at:new Date().toISOString()};db.moves.push(m);if(!persist()){db.moves.pop();return}['lossQty','lossDoc','lossNotes','lossFile'].forEach(id=>el(id).value='');render();alert('Perdita registrata e giacenza aggiornata.');};
+function editMove(id){const m=db.moves.find(x=>x.id===id);if(!m)return;const input=prompt('Correggi la quantità in kg del movimento '+m.kind+' del '+m.date+'. Valore attuale: '+fmt(m.qty),String(m.qty));if(input===null)return;const q=Number(input.replace(',','.'));if(!Number.isFinite(q)||q<=0){alert('Inserisci una quantità positiva.');return}const old=m.qty;m.qty=round(q);const order=db.orders.find(o=>o.id===m.orderId);if(!validLot(m.lotId)||(m.kind==='spedizione'&&order&&delivered(order.id)>num(order.qty)+0.00001)){m.qty=old;alert('Correzione non ammessa: giacenza o ordine insufficienti.');return}if(!confirm('Confermi la correzione da '+fmt(old)+' a '+fmt(m.qty)+' kg?')){m.qty=old;return}audit('CORREZIONE MOVIMENTO',{id,old,new:m.qty});if(!persist()){m.qty=old;db.audit.pop();return}render();alert('Movimento corretto e giacenza ricalcolata.');}
+function download(name,blob){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),15000)}
+
+const adjMode=el('adjMode');function syncAdj(){const initial=adjMode.value==='iniziale';['adjDest','adjName'].forEach(id=>el(id).disabled=!initial);['adjLot','adjSign'].forEach(id=>el(id).disabled=initial)}adjMode.onchange=syncAdj;syncAdj();
+el('adjSave').onclick=()=>{
+ const initial=adjMode.value==='iniziale',qty=Number(el('adjQty').value),reason=el('adjReason').value.trim(),operator=localStorage.getItem('ninfea-olbia-operator-v1')||'';
+ if(!Number.isFinite(qty)||qty<=0||!reason){alert('Inserisci quantità positiva e motivazione.');return}
+ if(initial){const name=el('adjName').value.trim();if(!name){alert('Indica il lotto iniziale.');return}if(!confirm('Confermi carico iniziale '+fmt(qty)+' kg per '+name+'?'))return;
+ const arr=recs(),r={id:rid(),date:today(),lot:name,ddtNumber:'INVENTARIO INIZIALE',realWeight:String(qty),quantity:String(qty),stockDestination:el('adjDest').value,operator,goods:'Cozze',createdAt:new Date().toISOString(),notes:reason,source:'inventario_iniziale'};arr.unshift(r);
+ try{localStorage.setItem('ninfea-olbia-records-v1',JSON.stringify(arr))}catch(e){alert('Salvataggio non riuscito');return}
+ audit('CARICO INIZIALE',{lotId:r.id,qty,reason,destination:r.stockDestination});persist();
+ }else{const id=el('adjLot').value,sign=Number(el('adjSign').value),l=allLots().find(x=>x.id===id);if(!l){alert('Seleziona lotto');return}if(sign<0&&qty>stock(id)-(l.destination==='commerciale'?reserved(id):0)+0.00001){alert('Quantità insufficiente: verifica le prenotazioni o il saldo del lotto.');return}if(!confirm('Confermi rettifica di '+(sign>0?'+':'−')+fmt(qty)+' kg sul lotto '+l.lot+'?'))return;
+ db.moves.push({id:rid(),kind:'rettifica',lotId:id,qty:-sign*qty,detail:reason,date:today(),operator,at:new Date().toISOString()});audit('RETTIFICA GIACENZA',{lotId:id,delta:sign*qty,reason});if(!persist()){db.moves.pop();db.audit.pop();return}
+ }el('adjQty').value='';el('adjReason').value='';render();alert('Giacenza aggiornata e movimento registrato.');
+};
+el('harvestSave').onclick=()=>{const id=el('harvestLot').value,out=Number(el('harvestOut').value),incoming=Number(el('harvestIn').value),name=el('harvestName').value.trim(),doc=el('harvestDoc').value.trim(),operator=localStorage.getItem('ninfea-olbia-operator-v1')||'';
+ if(!seaLots().some(l=>l.id===id)||!Number.isFinite(out)||out<=0||out>stock(id)+0.00001||!Number.isFinite(incoming)||incoming<=0||!name||!doc){alert('Controlla lotto, pesi, nuovo lotto e documento obbligatorio.');return}
+ if(!confirm('Confermi raccolta di '+fmt(out)+' kg dal mare e carico commerciale di '+fmt(incoming)+' kg? Conferma solo dopo i controlli richiesti.'))return;
+ const arr=recs(),r={id:rid(),date:today(),lot:name,ddtNumber:'RACCOLTA · '+doc,realWeight:String(incoming),quantity:String(incoming),stockDestination:'commerciale',operator,goods:'Cozze',createdAt:new Date().toISOString(),source:'raccolta',sourceLotId:id,notes:doc};
+ arr.unshift(r);try{localStorage.setItem('ninfea-olbia-records-v1',JSON.stringify(arr))}catch(e){alert('Salvataggio non riuscito');return}
+ db.moves.push({id:rid(),kind:'raccolta_mare',lotId:id,qty:out,detail:'Raccolta '+doc+' → '+name,date:today(),operator,at:new Date().toISOString()});audit('RACCOLTA DAL MARE',{sourceLotId:id,out,incoming,newLotId:r.id,doc});if(!persist()){db.moves.pop();db.audit.pop();arr.shift();localStorage.setItem('ninfea-olbia-records-v1',JSON.stringify(arr));return}
+ ['harvestOut','harvestIn','harvestName','harvestDoc'].forEach(id=>el(id).value='');render();alert('Raccolta registrata. Nuovo lotto commerciale creato.');
+};
+el('stockBackup').onclick=()=>download('NINFEA_OLBIA_backup_completo_'+today()+'.json',new Blob([JSON.stringify({version:3,createdAt:new Date().toISOString(),receipts:recs(),orders:db.orders,moves:db.moves},null,2)],{type:'application/json'}));
+el('stockCSV').onclick=()=>{const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';const lines=[['Tipo','Data','Ora','Carico','Ordine','Quantita_kg','Operatore','Note'].map(q).join(';'),...db.moves.map(m=>[m.kind,m.date,m.time,m.lotLabel,m.orderId,m.qty,m.operator,m.detail].map(q).join(';'))];download('NINFEA_movimenti_'+today()+'.csv',new Blob(['\ufeff'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'}))};
+window.addEventListener('ninfea-records-updated',render);el('save').addEventListener('click',()=>setTimeout(render,0));
+
+// Modalità a pagina singola: menu principale oppure una sola sezione operativa.
+const receiveSections=['quickPhoto','identity','step0','step1','step2'];
+const archiveCard=$('history').closest('.card');
+function showHome(){document.querySelectorAll('.activeWork').forEach(el=>el.classList.remove('activeWork'));document.body.classList.remove('app-work');document.body.classList.add('app-home');window.scrollTo({top:0,behavior:'smooth'})}
+function showSection(where){
+ document.querySelectorAll('.activeWork').forEach(el=>el.classList.remove('activeWork'));
+ document.body.classList.remove('app-home');document.body.classList.add('app-work');
+ if(where==='receive'){
+  receiveSections.forEach(id=>$(id)?.classList.add('activeWork'));
+  document.querySelector('.stepnav')?.classList.add('activeWork');
+  // Navigazione interna disponibile, senza ritorno forzato alla home.
+  setStep(0);
+ }else if(where==='archive'){
+  archiveCard.classList.add('activeWork');
+ }else{
+  $('stockModule').classList.add('activeWork');
+  const tab=where==='waste'?'movements':where;
+  document.querySelector(`[data-stocktab="${tab}"]`)?.click();
+ }
+ window.scrollTo({top:0,behavior:'smooth'});
+ if(where==='waste')setTimeout(()=>{$('lossQty')?.scrollIntoView({behavior:'smooth',block:'center'})},150);
+}
+$('goHome').addEventListener('click',showHome);
+document.querySelectorAll('[data-go]').forEach(btn=>btn.addEventListener('click',()=>showSection(btn.dataset.go)));
+showHome();
+window.addEventListener('storage',render);render();
+})();
+</script><script>(function(){'use strict';const archive=document.getElementById('history')?.closest('.card');if(!archive)return;const keys=['ninfea-olbia-records-v1','ninfea-olbia-stock-v3'];const bar=document.createElement('div');bar.className='actions noprint';bar.style.marginTop='12px';const b=document.createElement('button');b.type='button';b.className='light small';b.textContent='⬇ Salva backup completo';const r=document.createElement('button');r.type='button';r.className='light small';r.textContent='⬆ Ripristina backup';const file=document.createElement('input');file.type='file';file.accept='.json,application/json';file.hidden=true;bar.append(b,r,file);archive.append(bar);b.onclick=()=>{try{const data={app:'NINFEA SRL',backupVersion:1,createdAt:new Date().toISOString(),storage:{}};for(const k of keys)data.storage[k]=localStorage.getItem(k);const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='NINFEA_backup_'+new Date().toISOString().slice(0,10)+'.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000)}catch(e){alert('Backup non riuscito: '+e.message)}};r.onclick=()=>{file.value='';file.click()};file.onchange=async()=>{if(!file.files?.[0])return;try{if(file.files[0].size>20*1024*1024)throw Error('File troppo grande');const d=JSON.parse(await file.files[0].text());if(d.app!=='NINFEA SRL'||d.backupVersion!==1||!d.storage)throw Error('File non valido');for(const k of keys){const v=d.storage[k];if(v!==null&&typeof v!=='string')throw Error('Dati non validi');if(v!==null){const x=JSON.parse(v);if(k===keys[0]&&!Array.isArray(x))throw Error('Ricevimenti non validi');if(k===keys[1]&&(!Array.isArray(x.orders)||!Array.isArray(x.moves)))throw Error('Movimenti non validi')}}if(!confirm('Ripristinare il backup? Sostituirà tutti i dati locali attuali.'))return;if(prompt('Scrivi RIPRISTINA per confermare:')!=='RIPRISTINA')return;const old=Object.fromEntries(keys.map(k=>[k,localStorage.getItem(k)]));try{for(const k of keys){if(d.storage[k]===null)localStorage.removeItem(k);else localStorage.setItem(k,d.storage[k])}}catch(e){for(const k of keys){try{if(old[k]===null)localStorage.removeItem(k);else localStorage.setItem(k,old[k])}catch(_){}}throw e}alert('Backup ripristinato. La pagina verrà ricaricata.');location.reload()}catch(e){alert('Ripristino annullato: '+e.message)}}})();</script></body></html>
