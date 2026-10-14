@@ -204,7 +204,7 @@ button.mainAction{background:#0b846a}
 input:not([type]),input[type="text"],input[type="search"],textarea,select{text-transform:uppercase}
 .stepnav button,.subnav button{cursor:pointer}
 .subactions button{min-width:130px;font-weight:700}
-</style></head><body><div id="operatorGate" class="hidden"><div class="gateCard"><h2>Benvenuto in NINFEA SRL</h2><p class="muted">Inserisci nome e cognome una sola volta. Saranno riportati sulle schede e sui PDF.</p><label for="gateName">Nome e cognome operatore</label><input id="gateName" autocomplete="name" placeholder="Es. Mario Rossi"><button id="gateSave" type="button">Conferma operatore</button></div></div><main class="wrap"><header><h1>NINFEA SRL <small style='font-size:12px'>V15</small></h1><p>Ricevimento merci · Giacenze · Ordini e spedizioni</p></header><div class="homebar noprint" id="homeBar"><button type="button" id="goHome" class="light">⌂ Home · Menu principale</button><button type="button" id="printAnywhere" class="light">🖨️ Stampa</button><button type="button" id="pdfAnywhere" class="light">📄 Crea PDF</button></div><section class="dashboard noprint" id="homeDashboard"><h2>Operazioni rapide</h2><p>Scegli cosa vuoi fare. Tutte le schede restano nel telefono.</p><div class="dashgrid" id="v17Dashboard">
+</style></head><body><div id="operatorGate" class="hidden"><div class="gateCard"><h2>Benvenuto in NINFEA SRL</h2><p class="muted">Inserisci nome e cognome una sola volta. Saranno riportati sulle schede e sui PDF.</p><label for="gateName">Nome e cognome operatore</label><input id="gateName" autocomplete="name" placeholder="Es. Mario Rossi"><button id="gateSave" type="button">Conferma operatore</button></div></div><main class="wrap"><header><h1>NINFEA SRL <small style='font-size:12px'>V18</small></h1><p>Ricevimento merci · Giacenze · Ordini e spedizioni</p></header><div class="homebar noprint" id="homeBar"><button type="button" id="goHome" class="light">⌂ Home · Menu principale</button><button type="button" id="printAnywhere" class="light">🖨️ Stampa</button><button type="button" id="pdfAnywhere" class="light">📄 Crea PDF</button></div><section class="dashboard noprint" id="homeDashboard"><h2>Cosa vuoi fare?</h2><p>Scegli una sola operazione.</p><div class="dashgrid" id="v17Dashboard">
 <button type="button" class="dashbtn" data-go="receive"><span class="emoji">🚚</span><strong>Ricevimenti</strong><small>Nuovo carico e pesatura</small></button>
 <button type="button" class="dashbtn" data-go="overview"><span class="emoji">📦</span><strong>Giacenze</strong><small>Commerciale e mare</small></button>
 <button type="button" class="dashbtn" data-v17-panel="orders"><span class="emoji">🧾</span><strong>Ordini</strong><small>Clienti e prenotazioni</small></button>
@@ -425,7 +425,7 @@ $('gateSave').onclick=()=>{const name=$('gateName').value.trim();if(name.length<
 $('changeOperator').onclick=showOperatorGate;
 $('operator').addEventListener('change',()=>{const name=$('operator').value.trim();if(name)localStorage.setItem(OP,name)});
 if(!localStorage.getItem(OP))showOperatorGate();
-if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js?v=16').catch(()=>{});
+if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js?v=18').catch(()=>{});
 </script>
 <script>
 (function(){
@@ -585,35 +585,55 @@ window.addEventListener('storage',render);render();
 })();
 </script>
 <style>
-/* NINFEA V17: schermate singole, menu leggibile su telefono */
-#v17Dashboard .dashbtn{min-height:126px}
-#v17Dashboard .dashbtn strong{font-size:17px}
-#ninfeaStockMenu{position:relative}
-#ninfeaStockMenu button{line-height:1.25}
-#v17SectionLabel{font-size:14px;font-weight:700;color:#176b83;margin:8px 0 12px}
-@media(max-width:390px){#v17Dashboard .dashbtn{min-height:110px}#ninfeaStockMenu button{font-size:13px}}
+/* V18: navigazione essenziale */
+#ninfeaStockMenu{display:none!important}
+#stockModule.v18Clean>h2,#stockModule.v18Clean>p.muted{display:none}
+#v18Title{font-size:22px;font-weight:800;margin-bottom:12px}
+#v18Actions{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+#v18Actions button{background:#e4eff3;color:#15344a;font-size:14px}
+#v17Dashboard .dashbtn{min-height:112px}
+body.app-home #goHome{display:none}
+body:not(.v18-receive) #printAnywhere,body:not(.v18-receive) #pdfAnywhere{display:none}
 </style>
 <script>
 (function(){
 'use strict';
-const mod=document.getElementById('stockModule');
-if(!mod)return;
-const label=document.createElement('div');label.id='v17SectionLabel';
-mod.querySelector('h2')?.insertAdjacentElement('afterend',label);
-const names={overview:'Giacenze',inventory:'Inventario e rettifiche',harvest:'Raccolta dal mare',orders:'Ordini',movements:'Movimenti',ledger:'Storico'};
-const menu=document.getElementById('ninfeaStockMenu');
-if(menu){
- menu.addEventListener('click',e=>{
- const b=e.target.closest('button[data-panel]');
- if(b)label.textContent='Sezione aperta: '+(names[b.dataset.panel]||'');
- });
+const module=document.getElementById('stockModule');
+if(!module)return;
+const title=document.createElement('div');title.id='v18Title';
+const actions=document.createElement('div');actions.id='v18Actions';
+module.prepend(actions);module.prepend(title);
+const labels={overview:'Giacenze',inventory:'Inventario e rettifiche',orders:'Ordini',movements:'Movimenti',harvest:'Allevamento',ledger:'Storico movimenti'};
+function navButton(text,dest){
+ const b=document.createElement('button');b.type='button';b.textContent=text;
+ b.onclick=()=>open(dest);actions.append(b);return b;
 }
-document.querySelectorAll('[data-v17-panel]').forEach(b=>b.addEventListener('click',()=>{
- document.querySelector('[data-go="overview"]')?.click();
- const panel=b.dataset.v17Panel;
- if(typeof window.ninfeaOpenStockPanel==='function')window.ninfeaOpenStockPanel(panel);
- label.textContent='Sezione aperta: '+(names[panel]||'');
-}));
-label.textContent='Sezione aperta: Giacenze';
+const inventory=navButton('🧮 Inventario / Rettifiche','inventory');
+const ledger=navButton('📋 Storico movimenti','ledger');
+const back=navButton('← Torna alle giacenze','overview');
+const archive=navButton('📂 Archivio ricevimenti','archive');
+function open(section){
+ if(section==='archive'){document.querySelector('#v17Dashboard [data-go="archive"]')?.click();return;}
+ document.querySelector('#v17Dashboard [data-go="overview"]')?.click();
+ window.ninfeaOpenStockPanel?.(section);
+ module.classList.add('v18Clean');
+ title.textContent=labels[section]||'Giacenze';
+ inventory.hidden=section!=='overview';
+ ledger.hidden=section!=='movements';
+ back.hidden=section==='overview';
+ archive.hidden=section!=='ledger';
+ document.body.classList.remove('v18-receive');
+ window.scrollTo({top:0,behavior:'instant'});
+}
+document.querySelectorAll('[data-v17-panel]').forEach(b=>b.addEventListener('click',()=>open(b.dataset.v17Panel)));
+document.querySelector('#v17Dashboard [data-go="overview"]')?.addEventListener('click',()=>{
+ module.classList.add('v18Clean');title.textContent='Giacenze';
+ inventory.hidden=false;ledger.hidden=true;back.hidden=true;archive.hidden=true;
+ window.ninfeaOpenStockPanel?.('overview');
+});
+document.querySelector('#v17Dashboard [data-go="receive"]')?.addEventListener('click',()=>document.body.classList.add('v18-receive'));
+document.querySelector('#v17Dashboard [data-go="archive"]')?.addEventListener('click',()=>document.body.classList.remove('v18-receive'));
+document.getElementById('goHome')?.addEventListener('click',()=>document.body.classList.remove('v18-receive'));
+module.classList.add('v18Clean');
 })();
 </script></body></html>
